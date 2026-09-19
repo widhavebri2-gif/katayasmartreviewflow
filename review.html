@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beri Ulasan - Kataya Smart Review</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kataya: {
+                            navy: '#0A1931',
+                            cardNavy: '#0B1C3F',
+                            berry: '#BE123C',
+                            fuchsia: '#E01A8A',
+                            white: '#FFFFFF',
+                            textNavy: '#0A1931'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        :root {
+            --primary-color: #BE123C;
+            --bg-color: #0A1931;
+            --card-bg: #FFFFFF;
+            --text-navy: #0A1931;
+        }
+        body {
+            background-color: var(--bg-color);
+        }
+        .theme-primary-btn {
+            background-color: var(--primary-color);
+        }
+        .theme-primary-text {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-[#E01A8A]/30 text-slate-100 bg-[#0A1931]">
+
+    <!-- Header / Navbar Mini -->
+    <header class="w-full py-4 px-4 sm:px-6">
+        <div class="max-w-xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-xs font-semibold text-slate-300" id="headerBranchBadge" data-i18n="review.officialOutlet">Outlet Resmi</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <!-- Tombol Masuk Dashboard Pemilik -->
+                <button type="button" onclick="openOwnerLoginModal()" 
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0B1C3F] hover:bg-[#0B1C3F]/80 text-white border border-slate-700 text-xs font-bold shadow-sm transition-all">
+                    <i data-lucide="lock" class="w-3.5 h-3.5 text-[#E01A8A]"></i>
+                    <span>Dashboard</span>
+                </button>
+                <div id="reviewLangSwitcher" class="ml-0.5"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Konten Utama: Kartu Rating Pelanggan atau Kartu Akses Terkunci -->
+    <main class="flex-grow flex items-center justify-center p-4">
+        
+        <!-- KARTU TERKUNCI JIKA BELUM DIAKTIFKAN OLEH DEVELOPER -->
+        <div id="lockedActivationCard" class="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/40 border border-amber-200 text-center relative overflow-hidden hidden text-[#0A1931]">
+            <!-- Ikon Gembok Tegas -->
+            <div class="w-20 h-20 rounded-3xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-4 shadow-inner">
+                <i data-lucide="lock" class="w-10 h-10 text-amber-600"></i>
+            </div>
+            
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 mb-2">
+                <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-amber-600"></i>
+                <span>Akses Ulasan Terkunci</span>
+            </div>
+
+            <h1 id="lockedBizName" class="text-2xl font-black text-[#0A1931] mb-1">
+                Bisnis Mitra
+            </h1>
+            <p class="text-xs font-semibold text-[#BE123C] mb-4">
+                Belum Diaktifkan oleh Developer
+            </p>
+
+            <div class="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-4 text-xs text-amber-950 text-left space-y-2 mb-6">
+                <p class="leading-relaxed">
+                    Halaman ulasan cerdas untuk bisnis ini <strong>tidak dapat diakses</strong> karena sistem masih menunggu persetujuan dan aktivasi resmi dari tim Developer Kataya.
+                </p>
+                <div class="pt-2 border-t border-amber-200/60 text-[11px] text-amber-900/90 leading-relaxed">
+                    💡 <strong>Bagi Pemilik Bisnis:</strong> Hubungi tim pengembang Kataya untuk konfirmasi pembayaran dan aktivasi agar ulasan bisnis Anda segera aktif dan dapat menerima ulasan dari pelanggan.
+                </div>
+            </div>
+
+            <div class="space-y-2.5">
+                <a id="lockedWaDevBtn" href="https://wa.me/6285856640045" target="_blank" rel="noopener noreferrer" 
+                    class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2 transition-all">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>Hubungi Developer untuk Aktivasi</span>
+                </a>
+                <a href="index.html" 
+                    class="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0A1931] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+                    <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                    <span>Kembali ke Beranda</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Kartu Rating Pelanggan (Hanya Tampil Jika Status Sudah Aktif) -->
+        <div id="reviewMainCard" class="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/50 border border-slate-100 text-center relative overflow-hidden text-[#0A1931]">
+            
+            <!-- Logo Bisnis -->
+            <div class="mx-auto mb-4 flex items-center justify-center">
+                <div id="bizLogoContainer" class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-[#BE123C] to-[#E01A8A] flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-pink-900/30 overflow-hidden">
+                    <span id="bizLogoLetter">K</span>
+                    <img id="bizLogoImage" src="" alt="Logo" class="w-full h-full object-cover hidden">
+                </div>
+            </div>
+
+            <!-- 1. Nama Bisnis -->
+            <h1 id="bizDisplayName" class="text-2xl font-black text-[#0A1931] mb-1">
+                Memuat Bisnis...
+            </h1>
+            <p id="bizBranchAddress" class="text-xs text-slate-500 font-medium mb-3">
+                Silakan berikan penilaian pengalaman Anda
+            </p>
+
+            <!-- Tampilan Rating Google Maps Resmi -->
+            <div class="flex justify-center mb-5">
+                <a id="bizGoogleRatingLink" href="#" target="_blank" rel="noopener noreferrer" 
+                    class="inline-flex items-center gap-2.5 px-3.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/90 rounded-2xl text-[#0A1931] shadow-sm transition-all group" title="Lihat Ulasan di Google Maps">
+                    <!-- Icon Google "G" 4-Warna Resmi -->
+                    <div class="w-6 h-6 flex items-center justify-center flex-shrink-0 bg-white rounded-full p-1 shadow-xs border border-slate-100">
+                        <svg class="w-full h-full" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                        </svg>
+                    </div>
+                    <!-- Skor & Bintang Google Maps -->
+                    <div class="text-left leading-tight">
+                        <div class="flex items-center gap-1.5">
+                            <span id="bizGoogleScore" class="font-black text-[#0A1931] text-sm">4.9</span>
+                            <div id="bizGoogleStars" class="flex items-center text-amber-400 gap-0.5">
+                                <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
+                                <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
+                                <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
+                                <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
+                                <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 text-[11px] text-slate-500 font-medium mt-0.5">
+                            <span id="bizGoogleReviewCount">48 ulasan di Google Maps</span>
+                            <span class="inline-flex items-center text-[#BE123C] font-semibold" title="Terverifikasi di Google Maps">
+                                <i data-lucide="badge-check" class="w-3 h-3 ml-0.5"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- Icon External Link -->
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 text-slate-400 group-hover:text-[#BE123C] transition-colors ml-1"></i>
+                </a>
+            </div>
+
+            <!-- Kalimat Ajakan Ramah -->
+            <div class="bg-pink-50/50 border border-pink-100 rounded-2xl p-4 mb-8">
+                <p id="bizInviteText" class="text-xs sm:text-sm font-semibold text-[#0A1931] leading-snug">
+                    Bagikan pengalaman terbaik Anda bersama kami hari ini!
+                </p>
+            </div>
+
+            <!-- 2. 5 Bintang Interaktif -->
+            <div class="mb-4">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Ketuk Bintang untuk Menilai</p>
+                <div class="flex items-center justify-center gap-2 sm:gap-3 py-2" id="starContainer">
+                    <button type="button" class="star-btn text-slate-300 hover:text-amber-400 focus:outline-none" data-stars="1" title="1 Bintang - Sangat Kecewa">
+                        <i data-lucide="star" class="w-10 h-10 sm:w-12 sm:h-12 fill-current"></i>
+                    </button>
+                    <button type="button" class="star-btn text-slate-300 hover:text-amber-400 focus:outline-none" data-stars="2" title="2 Bintang - Kurang Puas">
+                        <i data-lucide="star" class="w-10 h-10 sm:w-12 sm:h-12 fill-current"></i>
+                    </button>
+                    <button type="button" class="star-btn text-slate-300 hover:text-amber-400 focus:outline-none" data-stars="3" title="3 Bintang - Cukup / Biasa">
+                        <i data-lucide="star" class="w-10 h-10 sm:w-12 sm:h-12 fill-current"></i>
+                    </button>
+                    <button type="button" class="star-btn text-slate-300 hover:text-amber-400 focus:outline-none" data-stars="4" title="4 Bintang - Puas">
+                        <i data-lucide="star" class="w-10 h-10 sm:w-12 sm:h-12 fill-current"></i>
+                    </button>
+                    <button type="button" class="star-btn text-slate-300 hover:text-amber-400 focus:outline-none" data-stars="5" title="5 Bintang - Luar Biasa!">
+                        <i data-lucide="star" class="w-10 h-10 sm:w-12 sm:h-12 fill-current"></i>
+                    </button>
+                </div>
+                <div id="starFeedbackLabel" class="text-xs font-bold text-[#BE123C] h-5 mt-2 transition-all">
+                    Pilih 1 sampai 5 bintang
+                </div>
+            </div>
+            <!-- Catatan Proteksi -->
+            <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-center gap-2 text-[11px] text-slate-500">
+                <div class="w-4 h-4 rounded bg-white border border-slate-200 p-0.5 shadow-xs overflow-hidden inline-flex items-center justify-center">
+                    <img src="assets/img/kataya-logo.jpg" alt="Logo Kataya" class="w-full h-full object-contain">
+                </div>
+                <span data-i18n="review.protectionBadge">Diproteksi oleh Sistem Verifikasi Ulasan Kataya</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 text-center text-xs text-slate-400 max-w-md mx-auto px-4 space-y-2">
+        <div class="flex items-center justify-center gap-2">
+            <div class="w-5 h-5 rounded-md bg-white border border-slate-700 p-0.5 shadow-xs overflow-hidden inline-flex items-center justify-center">
+                <img src="assets/img/kataya-logo.jpg" alt="Logo Kataya" class="w-full h-full object-contain">
+            </div>
+            <span class="text-xs font-semibold text-slate-300"><span data-i18n="nav.poweredBy">Didukung oleh</span> <a href="about.html" class="font-bold text-[#E01A8A] hover:underline">Kataya Review Protection</a></span>
+        </div>
+        <p class="text-[11px] text-slate-400">© 2026 Kataya Flow. <span data-i18n="nav.rightsReserved">Seluruh hak cipta dilindungi undang-undang.</span></p>
+        <p class="text-[10px] text-slate-400" data-i18n="nav.disclaimer">Google & Google Maps adalah merek dagang Google LLC. Kataya beroperasi secara mandiri.</p>
+    </footer>
+
+    <!-- MODAL POPUP: Bintang 1-3 (Rating Rendah -> Dicegat ke WhatsApp Owner) -->
+    <div id="modalWhatsappFeedback" class="fixed inset-0 z-50 bg-[#0A1931]/80 modal-backdrop hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 modal-content shadow-2xl relative text-center text-[#0A1931]">
+            <button onclick="closeWaModal()" class="absolute top-4 right-4 text-slate-400 hover:text-[#0A1931]">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Ikon Emoticon Ramah -->
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mb-3">
+                <i data-lucide="heart-handshake" class="w-9 h-9"></i>
+            </div>
+
+            <!-- Konfirmasi Rating Bintang Terpilih Pelanggan -->
+            <div id="modalWaStarBadge" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold mb-3 shadow-xs">
+                <div id="modalWaStarIcons" class="flex items-center gap-0.5 text-amber-500">
+                    <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+                </div>
+                <span id="modalWaStarText">3 Bintang Terpilih</span>
+            </div>
+
+            <h3 class="text-xl font-bold text-[#0A1931]" data-i18n="review.modalWaTitle">Terima Kasih Atas Ulasan Anda!</h3>
+            <p class="text-xs text-slate-600 mt-1 mb-4 leading-relaxed" data-i18n="review.modalWaDesc">
+                Kami mohon maaf atas ketidaknyamanan Anda. Masukan Anda sangat berharga untuk perbaikan layanan kami. Beritahu kami kendala Anda agar manajemen dapat langsung menindaklanjutinya!
+            </p>
+
+            <div class="text-left space-y-3 mb-5">
+                <div>
+                    <label for="complaintText" class="block text-xs font-bold text-[#0A1931] mb-1" data-i18n="review.complaintLabel">
+                        Ceritakan apa yang perlu kami perbaiki: (Opsional)
+                    </label>
+                    <textarea id="complaintText" rows="3" data-i18n-placeholder="review.complaintPlaceholder" placeholder="Contoh: Pelayanan agak lama, pesanan dingin, dll." 
+                        class="w-full p-3 text-xs border border-slate-300 rounded-xl focus:border-[#BE123C] focus:ring-2 focus:ring-pink-100 outline-none text-[#0A1931]"></textarea>
+                </div>
+            </div>
+
+            <!-- Tombol Kirim Langsung ke WA Owner -->
+            <button type="button" onclick="sendComplaintToWhatsapp()" 
+                class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                <span data-i18n="review.btnSendWa">Sampaikan Langsung ke WhatsApp Owner</span>
+            </button>
+
+            <p class="text-[11px] text-slate-400 mt-3" data-i18n="review.complaintDirectWaHint">
+                Pesan ini langsung terkirim secara pribadi ke pemilik bisnis.
+            </p>
+        </div>
+    </div>
+
+    <!-- MODAL POPUP: Bintang 4-5 (Rating Tinggi -> Otomatis Dialihkan ke Google Review) -->
+    <div id="modalGoogleReview" class="fixed inset-0 z-50 bg-[#0A1931]/80 modal-backdrop hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 modal-content shadow-2xl relative text-center text-[#0A1931]">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-pink-100 text-[#BE123C] flex items-center justify-center mb-3">
+                <i data-lucide="sparkles" class="w-9 h-9"></i>
+            </div>
+
+            <h3 class="text-xl font-bold text-[#0A1931]" data-i18n="review.modalGoogleTitle">Terima Kasih Banyak! ⭐</h3>
+            <p class="text-xs text-slate-600 mt-1 mb-4 leading-relaxed">
+                <span data-i18n="review.modalGoogleDesc">Senang sekali Anda memiliki pengalaman yang menyenangkan bersama kami! Mohon bantu bagikan ulasan bintang</span> 
+                <span id="popupSelectedStarsText" class="font-bold text-amber-500">5</span> 
+                <span data-i18n="review.modalGoogleDesc2">Anda di Google Maps untuk mendukung kami.</span>
+            </p>
+
+            <!-- Indikator Bintang Dinamis Sesuai Pilihan -->
+            <div id="modalGoogleStarIcons" class="p-3 bg-pink-50 rounded-2xl border border-pink-100 mb-3 flex items-center justify-center gap-1.5 text-amber-500">
+                <i data-lucide="star" class="w-6 h-6 fill-amber-400 text-amber-400"></i>
+                <i data-lucide="star" class="w-6 h-6 fill-amber-400 text-amber-400"></i>
+                <i data-lucide="star" class="w-6 h-6 fill-amber-400 text-amber-400"></i>
+                <i data-lucide="star" class="w-6 h-6 fill-amber-400 text-amber-400"></i>
+                <i data-lucide="star" class="w-6 h-6 fill-amber-400 text-amber-400"></i>
+            </div>
+
+            <div class="mb-5 text-xs font-semibold text-slate-700 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/80 text-center">
+                <span>⭐ Pilihan Anda: </span><strong id="modalGoogleStarConfirm" class="text-amber-700 font-black">5 Bintang ★</strong>
+                <span class="block text-[11px] text-slate-500 mt-0.5">Ulasan akan diterbitkan di Google Maps sesuai bintang yang Anda pilih.</span>
+            </div>
+
+            <a id="btnDirectGoogleReview" href="#" target="_blank" rel="noopener noreferrer" onclick="confirmGoogleRedirect()" 
+                class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-bold text-sm shadow-lg shadow-pink-900/30 flex items-center justify-center gap-2 transition-all">
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+                <span data-i18n="review.btnGoGoogle">Tulis Ulasan di Google Maps Sekarang</span>
+            </a>
+
+            <p class="text-[11px] text-slate-400 mt-3" id="autoRedirectCountdown">
+                Otomatis mengalihkan dalam 3 detik...
+            </p>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Akses Dashboard Pemilik -->
+    <div id="modalOwnerLogin" class="fixed inset-0 z-50 bg-[#0A1931]/80 modal-backdrop hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 modal-content shadow-2xl relative text-center text-[#0A1931]">
+            <button onclick="closeOwnerLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-[#0A1931]">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="w-12 h-12 mx-auto rounded-xl bg-pink-100 text-[#BE123C] flex items-center justify-center mb-3">
+                <i data-lucide="lock" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-[#0A1931]" data-i18n="dash.portalTitle">Dashboard Pemilik</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-4" data-i18n="dash.loginDesc">Cukup masukkan PIN akses yang Anda buat saat pendaftaran.</p>
+
+            <form id="formOwnerLogin" class="space-y-3" onsubmit="submitOwnerLogin(event)">
+                <input type="password" id="inputOwnerPin" maxlength="10" autofocus data-i18n-placeholder="dash.inputPin" placeholder="Masukkan PIN Akses" 
+                    class="w-full text-center tracking-widest text-lg font-mono py-2.5 px-4 border border-slate-300 rounded-xl focus:border-[#BE123C] outline-none text-[#0A1931]">
+                <div id="ownerPinError" class="text-xs text-[#BE123C] font-bold hidden">PIN salah! Periksa kembali kode akses Anda.</div>
+                <button type="submit" 
+                    class="w-full py-3 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-bold text-xs shadow-md transition-all" data-i18n="dash.btnLogin">
+                    Buka Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/db.js"></script>
+    <script src="assets/js/i18n.js"></script>
+    <script src="assets/js/review.js"></script>
+    <script>
+        lucide.createIcons();
+        if (window.KatayaI18n) {
+            window.KatayaI18n.renderSwitcher('reviewLangSwitcher');
+        }
+    </script>
+</body>
+</html>

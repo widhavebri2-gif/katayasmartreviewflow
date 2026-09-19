@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menghubungkan Meja - Kataya Smart Review</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kataya: {
+                            navy: '#0A1931',
+                            cardNavy: '#0B1C3F',
+                            berry: '#BE123C',
+                            fuchsia: '#E01A8A',
+                            white: '#FFFFFF',
+                            textNavy: '#0A1931'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#0A1931] text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-[#E01A8A]/30">
+
+    <!-- Header Mini -->
+    <header class="w-full py-4 px-4 sm:px-6 border-b border-slate-800 bg-[#0B1C3F]/80 backdrop-blur-md">
+        <div class="max-w-xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-white border border-slate-700 p-1 flex items-center justify-center shadow overflow-hidden">
+                    <img src="assets/img/kataya-logo.jpg" alt="Logo Kataya" class="w-full h-full object-contain">
+                </div>
+                <span class="text-sm font-black text-white">Kataya Smart Connect</span>
+            </div>
+            <span class="text-xs font-semibold text-slate-400">Barcode Meja Pintar</span>
+        </div>
+    </header>
+
+    <!-- Konten Router Cerdas -->
+    <main class="flex-grow flex items-center justify-center p-4">
+        
+        <!-- 1. State: Memeriksa & Mengalihkan (Loading) -->
+        <div id="stateLoading" class="w-full max-w-md bg-white rounded-3xl p-8 shadow-2xl text-center text-[#0A1931]">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-pink-50 text-[#BE123C] flex items-center justify-center animate-spin">
+                <i data-lucide="loader-2" class="w-8 h-8"></i>
+            </div>
+            <h2 class="text-xl font-black text-[#0A1931] mb-1">Menghubungkan Barcode Meja...</h2>
+            <p class="text-xs text-slate-500" id="loadingText">Mendeteksi status pendaftaran outlet bisnis...</p>
+        </div>
+
+        <!-- 2. State: Barcode Belum Terdaftar (Unclaimed -> Mempermudah Pendaftaran) -->
+        <div id="stateUnclaimed" class="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl text-center text-[#0A1931] hidden relative overflow-hidden">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-pink-100 text-[#BE123C] flex items-center justify-center mb-4 shadow-inner">
+                <i data-lucide="qr-code" class="w-9 h-9"></i>
+            </div>
+
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-pink-100 text-[#BE123C] mb-3">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                <span>Barcode Meja Siap Dihubungkan</span>
+            </div>
+
+            <h1 class="text-2xl font-black text-[#0A1931] mb-2">
+                Selamat Datang Mitra Baru!
+            </h1>
+            <p class="text-xs text-slate-600 mb-5 leading-relaxed">
+                Barcode akrilik meja ini siap ditautkan ke Google Bisnis toko Anda. Setelah mendaftar, barcode fisik ini <strong>otomatis beralih fungsi menjadi Barcode Ulasan Pelanggan</strong> tanpa perlu cetak ulang!
+            </p>
+
+            <!-- Box Kode Barcode -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 text-left space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">KODE BARCODE</span>
+                    <span class="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">Tersedia</span>
+                </div>
+                <div class="text-lg font-mono font-black text-[#BE123C] select-all" id="displayUnclaimedCode">
+                    STAND-XXXX
+                </div>
+                <p class="text-[11px] text-slate-500">
+                    Kode ini akan otomatis terhubung ke sistem ulasan bintang meja kasir Anda.
+                </p>
+            </div>
+
+            <div class="space-y-2.5">
+                <a id="btnRegisterNow" href="index.html" 
+                    class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-bold text-sm shadow-lg shadow-pink-900/30 flex items-center justify-center gap-2 transition-all">
+                    <i data-lucide="arrow-right-circle" class="w-4 h-4"></i>
+                    <span>Daftarkan Bisnis Ini Sekarang</span>
+                </a>
+                <a href="index.html" 
+                    class="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0A1931] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+                    <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                    <span>Kembali ke Beranda</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 3. State: Barcode Menunggu Aktivasi Developer -->
+        <div id="statePending" class="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl text-center text-[#0A1931] hidden relative overflow-hidden">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mb-4">
+                <i data-lucide="clock" class="w-9 h-9"></i>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 mb-2">
+                Menunggu Aktivasi Developer
+            </span>
+            <h2 class="text-xl font-black text-[#0A1931] mb-1" id="pendingBizName">Bisnis Mitra</h2>
+            <p class="text-xs text-slate-500 mb-4">Pendaftaran toko Anda telah tercatat, saat ini sedang dalam proses verifikasi dan aktivasi oleh Tim Pengembang Kataya.</p>
+            
+            <a href="https://wa.me/6285856640045" target="_blank" rel="noopener noreferrer" 
+                class="inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                <span>Konfirmasi ke WhatsApp Developer</span>
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-4 text-center text-xs text-slate-400">
+        <p>© 2026 Kataya Smart Review Flow • Dual-Phase Barcode Connector</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/db.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await handleBarcodeRouting();
+        });
+
+        async function handleBarcodeRouting() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const standeeCode = (urlParams.get('standee') || urlParams.get('code') || '').trim();
+
+            const stateLoading = document.getElementById('stateLoading');
+            const stateUnclaimed = document.getElementById('stateUnclaimed');
+            const statePending = document.getElementById('statePending');
+
+            if (!standeeCode) {
+                // Jika tidak ada kode standee, arahkan ke beranda
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Periksa apakah barcode standee ini sudah terhubung ke bisnis
+            const biz = await window.KatayaDB.getBusinessByStandeeCode(standeeCode);
+
+            setTimeout(() => {
+                stateLoading.classList.add('hidden');
+
+                if (biz) {
+                    // KONDISI: Bisnis sudah terdaftar
+                    if (biz.status === 'active') {
+                        // FASTE 2: Sudah aktif -> Otomatis alihkan langsung ke halaman ulasan pelanggan!
+                        window.location.href = `review.html?id=${encodeURIComponent(biz.id)}&standee=${encodeURIComponent(standeeCode)}`;
+                    } else {
+                        // Terdaftar namun pending
+                        statePending.classList.remove('hidden');
+                        document.getElementById('pendingBizName').textContent = biz.businessName;
+                        if (window.lucide) lucide.createIcons();
+                    }
+                } else {
+                    // KONDISI 1: Barcode BELUM TERDAFTAR (Unclaimed) -> Buka alur pendaftaran mudah
+                    stateUnclaimed.classList.remove('hidden');
+                    document.getElementById('displayUnclaimedCode').textContent = standeeCode.toUpperCase();
+                    
+                    const registerBtn = document.getElementById('btnRegisterNow');
+                    if (registerBtn) {
+                        registerBtn.href = `index.html?standee=${encodeURIComponent(standeeCode)}#formRegister`;
+                    }
+                    if (window.lucide) lucide.createIcons();
+                }
+            }, 600);
+        }
+    </script>
+</body>
+</html>

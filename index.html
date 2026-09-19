@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kataya - Sistem Proteksi Rating Google Bisnis</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navyDark: '#0A1931',
+                        navyCard: '#0B1C3F',
+                        berry: '#BE123C',
+                        fuchsiaAccent: '#E01A8A',
+                        lightCard: '#FFFFFF',
+                        navyText: '#0A1931',
+                        primary: '#BE123C',
+                        primaryDark: '#9F1239',
+                        accent: '#E01A8A'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#0A1931] text-slate-100 antialiased min-h-screen flex flex-col justify-between selection:bg-[#E01A8A] selection:text-white">
+
+    <!-- Header / Navbar Utama (Secondary Dark Navy #0B1C3F) -->
+    <header class="bg-[#0B1C3F]/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+            <!-- Developer Kataya -->
+            <a href="about.html" class="flex items-center gap-2.5 group cursor-pointer" title="Klik untuk informasi developer Kataya & beli produk ini">
+                <div class="w-10 h-10 rounded-xl overflow-hidden bg-white border border-slate-700 shadow-sm flex items-center justify-center p-0.5 group-hover:scale-105 group-hover:border-[#E01A8A] group-hover:shadow-md transition-all">
+                    <img src="assets/img/kataya-logo.jpg" alt="Logo Resmi Kataya" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-xl font-black bg-gradient-to-r from-[#BE123C] via-[#E01A8A] to-pink-400 bg-clip-text text-transparent group-hover:opacity-90">Kataya</span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#E01A8A]/20 text-[#E01A8A] border border-[#E01A8A]/30 uppercase">Dev</span>
+                    </div>
+                    <span class="text-[11px] font-medium text-slate-400 block -mt-0.5">Sentuh untuk info & beli paket &rarr;</span>
+                </div>
+            </a>
+
+            <!-- Tombol Navigasi Cepat -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="dashboard.html" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-bold text-white hover:text-[#E01A8A] bg-[#0B1C3F] hover:bg-[#0A1931] border border-slate-700 hover:border-[#E01A8A]/50 rounded-xl shadow-sm transition-all">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-[#E01A8A]"></i>
+                    <span data-i18n="nav.dashboardPortal">Masuk Dashboard</span>
+                </a>
+                <div id="indexLangSwitcher" class="ml-0.5 sm:ml-1 sm:pl-2.5 sm:border-l sm:border-slate-700"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Konten Utama: 2 Kolom (Promosi & Form Pendaftaran) -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full flex-grow flex items-center">
+        <div class="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
+            
+            <!-- Kolom Kiri: Kalimat Promosi & Penjelasan Sistem -->
+            <div class="lg:col-span-6 space-y-6">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0B1C3F] border border-[#E01A8A]/40 text-[#E01A8A] text-xs font-bold uppercase tracking-wider">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E01A8A] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-[#E01A8A]"></span>
+                    </span>
+                    <span id="heroLiveCountBadge">Memuat Mitra...</span>
+                    <span>✨ Smart Review Protection</span>
+                </div>
+
+                <!-- Kalimat di sebelah kolom pendaftaran -->
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+                    <span data-i18n="home.heroTitle1">Lindungi Rating Google Bisnis anda dengan</span> <span class="bg-gradient-to-r from-[#BE123C] to-[#E01A8A] bg-clip-text text-transparent" data-i18n="home.heroTitleHighlight">Filter Bintang Otomatis</span>
+                </h1>
+
+                <p class="text-base sm:text-lg text-slate-300 leading-relaxed" data-i18n="home.heroSubtitle">
+                    Sistem proteksi cerdas ulasan pelanggan untuk menjaga rating bisnis Anda tetap prima di Google Maps:
+                </p>
+
+                <div class="space-y-3.5">
+                    <div class="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 font-bold">
+                            <i data-lucide="star" class="w-5 h-5 fill-emerald-500 text-emerald-500"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-sm text-[#0A1931]" data-i18n="home.cardHighTitle">Bintang 4 - 5 &rarr; Langsung ke Google Maps Review</h2>
+                            <p class="text-xs text-slate-500 mt-0.5" data-i18n="home.cardHighDesc">Pelanggan puas langsung diarahkan memberikan ulasan publik untuk mendongkrak omzet & reputasi usaha.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                        <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 font-bold">
+                            <i data-lucide="message-square-warning" class="w-5 h-5 text-amber-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-sm text-[#0A1931]" data-i18n="home.cardLowTitle">Bintang 1 - 3 &rarr; Disaring Otomatis ke WhatsApp Owner</h2>
+                            <p class="text-xs text-slate-500 mt-0.5" data-i18n="home.cardLowDesc">Keluhan langsung masuk ke WhatsApp pemilik secara pribadi dan TIDAK PERNAH tampil di Google Maps.</p>
+                        </div>
+                    </div>
+
+                    <!-- Fasilitas Kartu Pintar NFC di Setiap Paket -->
+                    <div class="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                        <div class="w-9 h-9 rounded-xl bg-[#BE123C] text-white flex items-center justify-center shrink-0 font-bold">
+                            <i data-lucide="wifi" class="w-5 h-5 rotate-90"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-1.5">
+                                <h2 class="font-bold text-sm text-[#0A1931]" data-i18n="home.badgeNfcIncluded">Setiap Paket Mendapatkan Fasilitas Kartu NFC</h2>
+                                <span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-pink-100 text-[#BE123C] uppercase">Gratis</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-0.5">Pelanggan tinggal <strong>tempelkan (tap) smartphone</strong> ke kartu pintar NFC meja untuk langsung membuka halaman ulasan tanpa scan!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kanal Pembayaran Resmi -->
+                <div class="p-4 rounded-2xl bg-[#0B1C3F] border border-slate-800 text-xs text-slate-300 space-y-1.5 shadow-md">
+                    <div class="font-bold text-white flex items-center justify-between">
+                        <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> Kanal Pembayaran Resmi Terverifikasi:</span>
+                        <span class="text-[10px] text-emerald-400 font-semibold bg-emerald-950/80 border border-emerald-800/60 px-2 py-0.5 rounded-full">A/n Widha Vebri Mardiawan</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">
+                        Didukung: <strong>Bank BCA</strong>, <strong>ShopeePay</strong>, dan <strong>DANA</strong>. Rincian nomor rekening resmi <strong>hanya akan ditampilkan setelah Anda selesai mengisi kolom formulir pendaftaran</strong> di sebelah kanan.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan: Form Pendaftaran Bisnis (Bagian A) -->
+                        <!-- Kolom Kanan: Form Pendaftaran & Login (Flip/Slide Container) -->
+            <div class="lg:col-span-6 relative perspective-1000" id="formSection" style="min-height: 500px; perspective: 1000px;">
+                
+                <!-- KARTU FORM DAFTAR -->
+                <div id="cardRegister" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xl shadow-black/20 absolute w-full top-0 left-0 transition-all duration-700 backface-hidden" style="transform: rotateY(0deg); transform-style: preserve-3d; backface-visibility: hidden;">
+                    <div class="mb-5">
+                        <h2 class="text-2xl font-black text-[#0A1931]">Pendaftaran Bisnis Baru</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1">Lengkapi data di bawah untuk mengaktifkan proteksi ulasan bisnis Anda.</p>
+                    </div>
+
+                    <!-- Banner Klaim Standee Akrilik Meja Fisik -->
+                    <div id="standeeClaimBanner" class="hidden mb-4 p-3.5 bg-pink-50 border border-pink-200 rounded-2xl flex items-center gap-3 animate-in fade-in duration-200">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#BE123C] to-[#E01A8A] text-white flex items-center justify-center shrink-0 shadow-sm">
+                            <i data-lucide="qr-code" class="w-5 h-5"></i>
+                        </div>
+                        <div class="text-xs">
+                            <p class="font-bold text-[#0A1931]">Mengklaim Standee Meja Akrilik</p>
+                            <p class="text-[11px] text-slate-500">Kode Barcode Meja: <span id="bannerStandeeCode" class="font-mono font-bold text-[#BE123C]">STAND-XXXX</span></p>
+                        </div>
+                    </div>
+
+                    <form id="formRegister" class="space-y-4">
+                        <input type="hidden" id="inputStandeeCode" name="standeeCode" value="">
+                        
+                        <!-- Pilihan Paket Layanan (Termasuk Kartu NFC) -->
+                        <div>
+                            <label class="block text-xs font-bold text-[#0A1931] uppercase tracking-wider mb-2">
+                                Pilih Paket Layanan (Semua Paket Dapat Fasilitas NFC) <span class="text-[#BE123C]">*</span>
+                            </label>
+                            <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                                <label class="border-2 border-slate-200 hover:border-[#E01A8A]/50 p-2.5 rounded-xl cursor-pointer has-[:checked]:border-[#BE123C] has-[:checked]:bg-pink-50/50 transition-all flex flex-col justify-between" id="labelPkgSingle">
+                                    <input type="radio" name="packageType" value="single" id="pkgRadioSingle" checked class="hidden">
+                                    <span class="font-bold text-[#0A1931] text-[11px]">Single Outlet</span>
+                                    <span class="font-black text-[#BE123C] text-xs mt-1">Rp 50.000</span>
+                                </label>
+                                <label class="border-2 border-slate-200 hover:border-[#E01A8A]/50 p-2.5 rounded-xl cursor-pointer has-[:checked]:border-[#BE123C] has-[:checked]:bg-pink-50/50 transition-all flex flex-col justify-between" id="labelPkgMulti">
+                                    <input type="radio" name="packageType" value="multi" id="pkgRadioMulti" class="hidden">
+                                    <span class="font-bold text-[#0A1931] text-[11px]">Multi Cabang</span>
+                                    <span class="font-black text-[#BE123C] text-xs mt-1">Rp 100.000</span>
+                                </label>
+                                <label class="border-2 border-slate-200 hover:border-[#E01A8A]/50 p-2.5 rounded-xl cursor-pointer has-[:checked]:border-[#BE123C] has-[:checked]:bg-pink-50/50 transition-all flex flex-col justify-between" id="labelPkgFranchise">
+                                    <input type="radio" name="packageType" value="franchise" id="pkgRadioFranchise" class="hidden">
+                                    <span class="font-bold text-[#0A1931] text-[11px]">Unlimited Franchise</span>
+                                    <span class="font-black text-[#BE123C] text-xs mt-1">Rp 500.000</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Jenis Usaha -->
+                        <div>
+                            <label for="inputType" class="block text-xs font-bold text-[#0A1931] uppercase tracking-wider mb-1.5">
+                                Jenis Usaha <span class="text-[#BE123C]">*</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                                </span>
+                                <select id="inputType" required 
+                                    class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:border-[#BE123C] focus:ring-2 focus:ring-[#BE123C]/20 text-sm text-[#0A1931] outline-none transition-all appearance-none bg-white">
+                                    <option value="" disabled selected>Pilih Kategori Usaha</option>
+                                    <option value="Kuliner (F&B)">Kuliner (F&B)</option>
+                                    <option value="Kecantikan & Salon">Kecantikan & Salon</option>
+                                    <option value="Toko Retail & Grosir">Toko Retail & Grosir</option>
+                                    <option value="Jasa & Layanan">Jasa & Layanan</option>
+                                    <option value="Hotel & Penginapan">Hotel & Penginapan</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Nama Bisnis -->
+                        <div>
+                            <label for="inputBusinessName" class="block text-xs font-bold text-[#0A1931] uppercase tracking-wider mb-1.5">
+                                Nama Bisnis (Di Google Maps) <span class="text-[#BE123C]">*</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i data-lucide="store" class="w-5 h-5"></i>
+                                </span>
+                                <input type="text" id="inputBusinessName" name="businessName" required placeholder="Contoh: Kopi Kenangan, Cabang Sudirman" 
+                                    class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:border-[#BE123C] focus:ring-2 focus:ring-[#BE123C]/20 text-sm text-[#0A1931] outline-none transition-all">
+                            </div>
+                        </div>
+
+                        <!-- Google Place ID -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label for="inputPlaceId" class="block text-xs font-bold text-[#0A1931] uppercase tracking-wider">
+                                    Google Place ID <span class="text-[#BE123C]">*</span>
+                                </label>
+                                <button type="button" onclick="showPlaceIdHelper()" class="text-[11px] font-bold text-[#BE123C] hover:text-[#E01A8A] bg-pink-50 hover:bg-pink-100 px-2.5 py-1 rounded-lg border border-pink-200 transition-colors flex items-center gap-1">
+                                    <i data-lucide="help-circle" class="w-3.5 h-3.5 text-[#BE123C]"></i> Cara Cari Place ID?
+                                </button>
+                            </div>
+                            
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i data-lucide="map-pin" class="w-5 h-5"></i>
+                                </span>
+                                <input type="text" id="inputPlaceId" required placeholder="Contoh: ChIJN1t_tDeuEmsRUsoyG83frY4" 
+                                    class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:border-[#BE123C] focus:ring-2 focus:ring-[#BE123C]/20 text-sm font-mono text-[#0A1931] outline-none transition-all">
+                            </div>
+                        </div>
+
+                        <!-- Nomer Whatsapp -->
+                        <div>
+                            <label for="inputWhatsapp" class="block text-xs font-bold text-[#0A1931] uppercase tracking-wider mb-1.5">
+                                Nomer WhatsApp Owner <span class="text-[#BE123C]">*</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i data-lucide="phone" class="w-5 h-5"></i>
+                                </span>
+                                <input type="tel" id="inputWhatsapp" required placeholder="Contoh: 08123456789 atau 628123456789" 
+                                    class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:border-[#BE123C] focus:ring-2 focus:ring-[#BE123C]/20 text-sm text-[#0A1931] outline-none transition-all">
+                            </div>
+                        </div>
+
+                        <!-- PIN Akses Dashboard -->
+                        <div>
+                            <label for="inputPin" class="block text-xs font-bold text-[#0A1931] uppercase tracking-wider mb-1.5">
+                                Buat PIN Akses Dashboard (4-6 Angka) <span class="text-[#BE123C]">*</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i data-lucide="lock" class="w-5 h-5"></i>
+                                </span>
+                                <input type="password" id="inputPin" required maxlength="6" placeholder="Contoh: 1234" 
+                                    class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:border-[#BE123C] focus:ring-2 focus:ring-[#BE123C]/20 text-sm text-[#0A1931] outline-none transition-all">
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="pt-2">
+                            <button type="submit" id="btnSubmitRegister" 
+                                class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-bold text-sm shadow-lg shadow-[#BE123C]/25 hover:shadow-[#BE123C]/40 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="credit-card" class="w-4 h-4"></i>
+                                <span>Lanjutkan ke Langkah Pembayaran &rarr;</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100 text-center">
+                        <p class="text-xs text-slate-500">Sudah punya akun? <button onclick="toggleForm()" class="text-[#BE123C] font-bold hover:underline">Masuk di sini</button></p>
+                    </div>
+                </div>
+
+                <!-- KARTU FORM LOGIN -->
+                <div id="cardLogin" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xl shadow-black/20 absolute w-full top-0 left-0 transition-all duration-700 backface-hidden" style="transform: rotateY(180deg); transform-style: preserve-3d; backface-visibility: hidden;">
+                    <div class="mb-5 text-center">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center mb-3 p-1">
+                            <img src="assets/img/kataya-logo.jpg" alt="Logo Kataya" class="w-full h-full object-contain">
+                        </div>
+                        <h2 class="text-2xl font-black text-[#0A1931]">Masuk ke Dashboard</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1">Masukkan nomor WhatsApp dan PIN akses bisnis Anda.</p>
+                    </div>
+
+                    <form id="formLoginHome" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-[#0A1931] uppercase mb-1">Nomor WhatsApp Terdaftar</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i data-lucide="phone" class="w-5 h-5"></i>
+                                </span>
+                                <input type="tel" id="authInputPhone" required placeholder="Contoh: 081234567890" 
+                                    class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 text-sm focus:border-[#BE123C] focus:ring-2 focus:ring-[#BE123C]/20 outline-none text-[#0A1931]">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-xs font-bold text-[#0A1931] uppercase">PIN Akses Bisnis</label>
+                            </div>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i data-lucide="lock" class="w-5 h-5"></i>
+                                </span>
+                                <input type="password" id="authInputPin" required maxlength="10" placeholder="Masukkan PIN Akses" 
+                                    class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 text-sm font-mono tracking-widest focus:border-[#BE123C] focus:ring-2 focus:ring-[#BE123C]/20 outline-none text-[#0A1931]">
+                            </div>
+                        </div>
+                        <div id="authPinErrorHome" class="text-xs text-rose-500 font-bold hidden text-center">
+                            Nomor WhatsApp atau PIN salah!
+                        </div>
+                        <div class="pt-2">
+                            <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-bold text-sm shadow-lg shadow-[#BE123C]/25 hover:shadow-[#BE123C]/40 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="log-in" class="w-4 h-4"></i>
+                                <span>Masuk ke Dashboard</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100 text-center">
+                        <p class="text-xs text-slate-500">Belum punya akun? <button onclick="toggleForm()" class="text-[#BE123C] font-bold hover:underline">Daftar sekarang</button></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let isLoginShowing = false;
+        function toggleForm() {
+            const cardRegister = document.getElementById('cardRegister');
+            const cardLogin = document.getElementById('cardLogin');
+            
+            if (isLoginShowing) {
+                // Show Register
+                cardRegister.style.transform = 'rotateY(0deg)';
+                cardLogin.style.transform = 'rotateY(180deg)';
+                document.getElementById('formSection').style.minHeight = cardRegister.scrollHeight + 'px';
+            } else {
+                // Show Login
+                cardRegister.style.transform = 'rotateY(-180deg)';
+                cardLogin.style.transform = 'rotateY(0deg)';
+                document.getElementById('formSection').style.minHeight = cardLogin.scrollHeight + 'px';
+            }
+            isLoginShowing = !isLoginShowing;
+            
+            // Re-calc height after transition
+            setTimeout(() => {
+                const activeCard = isLoginShowing ? cardLogin : cardRegister;
+                document.getElementById('formSection').style.minHeight = activeCard.scrollHeight + 'px';
+            }, 700);
+        }
+    </script>
+    <!-- SECTION: Mitra Bisnis yang Telah Terdaftar (Tampilkan di Beranda) -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-12 w-full border-t border-slate-800">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1C3F] border border-[#E01A8A]/40 text-[#E01A8A] text-xs font-bold uppercase tracking-wider mb-2">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-[#E01A8A]"></i> Mitra Terverifikasi
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                    Bisnis yang Telah Terdaftar &amp; Terproteksi
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                    Berikut adalah daftar mitra bisnis yang telah mempercayakan keamanan rating Google Maps mereka kepada sistem filter cerdas Kataya.
+                </p>
+            </div>
+            <div class="shrink-0 flex flex-wrap items-center gap-2.5">
+                <div id="registeredCountBadge" class="px-4 py-2.5 rounded-2xl bg-[#0B1C3F] text-white text-xs font-bold shadow-md flex items-center gap-2 border border-slate-700">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E01A8A] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#E01A8A]"></span>
+                    </span>
+                    <span id="realtimeCountText" class="text-[#E01A8A] font-extrabold text-sm">0</span>
+                    <span class="text-slate-200">Mitra Terdaftar (Live)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid Kartu Bisnis Terdaftar -->
+        <div id="registeredBusinessGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Diisi secara dinamis oleh assets/js/app.js -->
+        </div>
+    </section>
+
+    <!-- Footer Bersih & Legal Compliance -->
+    <footer class="bg-[#0B1C3F] border-t border-slate-800 py-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4 pb-4 border-b border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl overflow-hidden bg-white border border-slate-700 shadow-sm flex items-center justify-center p-0.5 shrink-0">
+                        <img src="assets/img/kataya-logo.jpg" alt="Logo Kataya" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <p class="font-semibold text-slate-300">&copy; 2026 Kataya Smart Review Flow. Seluruh Hak Cipta Dilindungi.</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Layanan bantuan resmi: <a href="https://wa.me/6285856640045" target="_blank" rel="noopener noreferrer" class="text-[#E01A8A] font-semibold hover:underline">WhatsApp Tim Kataya</a></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 text-xs font-semibold">
+                    <a href="about.html" class="text-[#E01A8A] hover:underline">Informasi Tentang Kami</a>
+                    <a href="developer.html" class="text-slate-400 hover:text-white">Akses Developer</a>
+                </div>
+            </div>
+            <!-- Penafian Merek Dagang & Hak Cipta Pihak Ketiga (Nominative Fair Use) -->
+            <div class="pt-4 text-[11px] text-slate-500 leading-relaxed text-center sm:text-left space-y-1">
+                <p><span class="font-semibold text-slate-400">Penafian Merek Dagang & Legalitas:</span> Google, Google Maps, Google Places, dan logo terkait adalah merek dagang terdaftar milik Google LLC. Kataya Smart Review Flow adalah platform manajemen reputasi independen dan tidak berafiliasi, disponsori, atau disetujui secara resmi oleh Google LLC. Seluruh merek pembayaran pihak ketiga (Bank BCA, ShopeePay, DANA) adalah hak cipta dan merek dagang dari masing-masing pemilik resminya dan hanya digunakan sebagai sarana verifikasi transfer transaksi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL KONFIRMASI PENDAFTARAN & PEMBAYARAN -->
+    <div id="modalPaymentMethods" class="fixed inset-0 z-50 bg-slate-900/70 modal-backdrop hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 modal-content shadow-2xl relative text-left">
+            <div class="w-14 h-14 rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm flex items-center justify-center mb-3 mx-auto p-1">
+                <img src="assets/img/kataya-logo.jpg" alt="Logo Kataya" class="w-full h-full object-contain">
+            </div>
+            
+            <h3 class="text-xl font-black text-[#0A1931] text-center">Pendaftaran Berhasil Diterima!</h3>
+            <p class="text-xs text-slate-500 text-center mt-1 mb-5">
+                Bisnis: <strong id="payBizName" class="text-[#0A1931]">...</strong> &bull; Paket: <strong id="payPackageLabel" class="text-[#BE123C]">...</strong>
+            </p>
+
+            <!-- Petunjuk Otomatisasi Aktivasi (Tanpa Kirim WA Manual) -->
+            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl mb-5 text-xs text-emerald-950 space-y-1.5">
+                <div class="font-bold flex items-center gap-1.5 text-emerald-800">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0"></i> 
+                    <span>Permintaan Telah Masuk ke Antrean Pengembang:</span>
+                </div>
+                <p class="text-[11px] leading-relaxed text-emerald-900">
+                    Anda <strong>tidak perlu mengirim konfirmasi manual</strong>. Tim Developer Kataya akan memverifikasi pendaftaran Anda, dan <strong>sistem akan otomatis mengaktifkan akun serta mengarahkan Anda langsung masuk ke Halaman Ulasan bisnis</strong>.
+                </p>
+            </div>
+
+            <!-- Saluran Pembayaran Resmi -->
+            <div class="space-y-2.5 mb-5">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Nomor Pembayaran Resmi Terverifikasi:</span>
+                
+                <!-- BCA -->
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-pink-100 text-[#BE123C] flex items-center justify-center font-bold">
+                            <i data-lucide="building-2" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[9px] font-extrabold uppercase text-[#BE123C] bg-pink-100 px-1.5 py-0.5 rounded">Bank BCA</span>
+                                <span class="text-xs font-mono font-black text-[#0A1931]">1240541153</span>
+                            </div>
+                            <div class="text-[10px] text-slate-500 mt-0.5">A/n <strong>Widha Vebri Mardiawan</strong></div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="copyPaymentNumber('1240541153', 'Bank BCA')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-[#BE123C] hover:text-[#E01A8A] border border-slate-200 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1 transition-all">
+                        <i data-lucide="copy" class="w-3 h-3"></i> Salin
+                    </button>
+                </div>
+
+                <!-- ShopeePay -->
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[9px] font-extrabold uppercase text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">ShopeePay</span>
+                                <span class="text-xs font-mono font-black text-[#0A1931]">085856640045</span>
+                            </div>
+                            <div class="text-[10px] text-slate-500 mt-0.5">A/n <strong>Widha Vebri Mardiawan</strong></div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="copyPaymentNumber('085856640045', 'ShopeePay')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-amber-700 border border-slate-200 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1 transition-all">
+                        <i data-lucide="copy" class="w-3 h-3"></i> Salin
+                    </button>
+                </div>
+
+                <!-- DANA -->
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold">
+                            <i data-lucide="wallet-cards" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[9px] font-extrabold uppercase text-sky-800 bg-sky-100 px-1.5 py-0.5 rounded">DANA</span>
+                                <span class="text-xs font-mono font-black text-[#0A1931]">085856640045</span>
+                            </div>
+                            <div class="text-[10px] text-slate-500 mt-0.5">A/n <strong>Widha Vebri Mardiawan</strong></div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="copyPaymentNumber('085856640045', 'DANA')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-sky-700 border border-slate-200 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1 transition-all">
+                        <i data-lucide="copy" class="w-3 h-3"></i> Salin
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <button type="button" onclick="onFinishPaymentAndQueue()" 
+                    class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-bold text-xs sm:text-sm shadow-lg shadow-[#BE123C]/25 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99]">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                    <span>Selesai &amp; Menunggu Antrian</span>
+                </button>
+                <div class="text-center pt-1">
+                    <a href="https://wa.me/6285856640045?text=Halo%20Kataya,%20saya%20sudah%20mendaftarkan%20bisnis%20saya" target="_blank" rel="noopener noreferrer" 
+                        class="text-[11px] text-slate-400 hover:text-[#E01A8A] font-medium inline-flex items-center gap-1">
+                        <i data-lucide="help-circle" class="w-3 h-3"></i> Butuh bantuan cepat? Hubungi WhatsApp Tim Kataya
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL UCAPAN TERIMA KASIH & EDUKASI PELANGGAN (MENUNGGU ANTREAN / MASUK ULASAN) -->
+    <div id="modalThankYouQueue" class="fixed inset-0 z-50 bg-slate-900/75 modal-backdrop hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 modal-content shadow-2xl relative text-center">
+            
+            <!-- Ikon Apresiasi & Kemitraan -->
+            <div id="thankYouIconWrap" class="w-16 h-16 rounded-3xl bg-pink-100 text-[#BE123C] flex items-center justify-center mx-auto mb-4 shadow-inner transition-all">
+                <i data-lucide="heart-handshake" class="w-9 h-9"></i>
+            </div>
+
+            <span class="inline-block px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-pink-100 text-[#BE123C] mb-2">
+                Apresiasi Kemitraan Kataya
+            </span>
+            
+            <h3 class="text-2xl font-black text-[#0A1931]">Terima Kasih Telah Bergabung!</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-4">
+                Bisnis: <strong id="thankYouBizName" class="text-[#0A1931]">...</strong>
+            </p>
+
+            <!-- Pesan Utama yang Disederhanakan & Mengena -->
+            <div class="bg-gradient-to-br from-pink-50/50 to-slate-50 border border-pink-100 p-5 rounded-2xl text-left mb-4 shadow-sm">
+                <p class="text-xs sm:text-[13px] text-slate-700 leading-relaxed font-medium">
+                    Kami hadir untuk <strong class="text-[#BE123C]">mempermudah kemajuan dan menjaga reputasi bisnis Anda</strong>. Namun, sistem secanggih apa pun tidak akan berdampak maksimal tanpa kerja sama Anda dalam <strong class="text-[#0A1931]">mengedukasi pelanggan</strong> agar selalu memberikan ulasan setiap kali selesai bertransaksi.
+                </p>
+                <div class="mt-3 pt-3 border-t border-pink-200/70 flex items-start gap-2 text-xs text-[#0A1931]">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-[#E01A8A] shrink-0 mt-0.5"></i>
+                    <span class="font-bold">Ajak setiap pelanggan tap kartu NFC atau scan barcode di meja kasir Anda!</span>
+                </div>
+            </div>
+
+            <!-- Indikator Status Aktivasi Realtime -->
+            <div id="thankYouStatusCard" class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 mb-5 text-center space-y-1.5 transition-all">
+                <div class="flex items-center justify-center gap-2 font-bold text-xs text-amber-800" id="thankYouStatusTitle">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+                    </span>
+                    <span id="thankYouStatusBadgeText">Status: Menunggu Antrean Aktivasi</span>
+                </div>
+                <p id="thankYouStatusDesc" class="text-[11px] text-amber-900 leading-relaxed">
+                    Data bisnis Anda sedang dalam antrean aktivasi developer. Begitu disetujui, layar ini akan <strong>langsung mengarahkan Anda masuk ke Halaman Ulasan</strong>.
+                </p>
+            </div>
+
+            <!-- Tombol Aksi: Masuk Ulasan & Bantuan -->
+            <div class="space-y-2">
+                <button type="button" id="btnEnterReviewNow" onclick="checkAndRedirectToReview()" 
+                    class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-bold text-xs sm:text-sm shadow-lg shadow-[#BE123C]/25 flex items-center justify-center gap-2 transition-all">
+                    <i data-lucide="arrow-right-circle" class="w-4 h-4"></i>
+                    <span id="btnEnterReviewText">Cek Status &amp; Masuk Halaman Ulasan</span>
+                </button>
+                <button type="button" onclick="closeThankYouModal()" 
+                    class="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors">
+                    Tutup &amp; Kembali ke Beranda
+                </button>
+                <div class="text-center pt-1">
+                    <a href="https://wa.me/6285856640045?text=Halo%20Kataya,%20saya%20sudah%20selesai%20pembayaran%20dan%20sedang%20menunggu%20antrian%20aktivasi" target="_blank" rel="noopener noreferrer" 
+                        class="text-[11px] text-slate-400 hover:text-[#E01A8A] font-medium inline-flex items-center gap-1">
+                        <i data-lucide="message-circle" class="w-3.5 h-3.5 text-[#E01A8A]"></i> Butuh bantuan cepat? Hubungi WhatsApp Tim Kataya
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PLACE ID HELPER (LANGKAH BERGAMBAR) -->
+    <div id="modalPlaceIdHelper" class="fixed inset-0 z-50 bg-slate-900/60 modal-backdrop hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-5 sm:p-7 modal-content shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closePlaceIdHelper()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 transition-colors z-10" title="Tutup">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="w-12 h-12 rounded-2xl bg-pink-100 text-[#BE123C] flex items-center justify-center mb-3">
+                <i data-lucide="map-pin" class="w-6 h-6"></i>
+            </div>
+            
+            <h3 class="text-xl font-black text-[#0A1931] mb-1">Cara Mendapatkan "Place ID"</h3>
+            <p class="text-xs font-bold text-[#BE123C] mb-4">
+                Lewat Google's Place ID Finder (paling mudah, tanpa coding)
+            </p>
+
+            <!-- GAMBAR PANDUAN VISUAL STEP-BY-STEP -->
+            <div class="mb-5 rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm bg-slate-50 group">
+                <img src="assets/img/place-id-guide.jpg" alt="Panduan Langkah Bergambar Cara Cari Place ID Google" 
+                    class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300">
+                <div class="p-2.5 bg-slate-100/80 border-t border-slate-200 text-center text-[11px] font-semibold text-slate-600 flex items-center justify-center gap-1.5">
+                    <i data-lucide="image" class="w-3.5 h-3.5 text-[#BE123C]"></i>
+                    <span>Ilustrasi 3 Langkah Praktis Menemukan Place ID di Peta Resmi Google</span>
+                </div>
+            </div>
+
+            <!-- DETAIL LANGKAH-LANGKAH -->
+            <div class="space-y-3 text-xs text-slate-700">
+                <!-- Langkah 1 -->
+                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                    <div class="flex items-center gap-2 font-bold text-[#0A1931]">
+                        <span class="w-6 h-6 rounded-full bg-[#BE123C] text-white flex items-center justify-center text-xs flex-shrink-0">1</span>
+                        <span>Buka tautan Google's Place ID Finder:</span>
+                    </div>
+                    <div class="ml-8">
+                        <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener noreferrer" 
+                            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#BE123C] hover:bg-[#E01A8A] text-white font-bold text-xs shadow-md shadow-[#BE123C]/20 transition-all break-all">
+                            <i data-lucide="external-link" class="w-4 h-4 flex-shrink-0"></i>
+                            <span>Buka https://developers.google.com/maps/documentation/places/web-service/place-id</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Langkah 2 -->
+                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
+                    <div class="flex items-center gap-2 font-bold text-[#0A1931]">
+                        <span class="w-6 h-6 rounded-full bg-[#BE123C] text-white flex items-center justify-center text-xs flex-shrink-0">2</span>
+                        <span class="leading-relaxed">Di halaman itu ada peta interaktif (Place ID Finder)</span>
+                    </div>
+                </div>
+
+                <!-- Langkah 3 -->
+                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
+                    <div class="flex items-center gap-2 font-bold text-[#0A1931]">
+                        <span class="w-6 h-6 rounded-full bg-[#BE123C] text-white flex items-center justify-center text-xs flex-shrink-0">3</span>
+                        <span class="leading-relaxed">Cari lokasi yang diinginkan, klik marker-nya</span>
+                    </div>
+                </div>
+
+                <!-- Output Place ID -->
+                <div class="p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-start gap-2.5">
+                    <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-emerald-950 text-xs sm:text-sm">
+                            Place ID akan muncul dalam sebuah popup, tinggal disalin
+                        </p>
+                        <p class="text-[11px] text-emerald-800 mt-1">
+                            Tempelkan kode tersebut (contoh: <code class="bg-white px-1.5 py-0.5 rounded border border-emerald-300 font-mono font-bold text-slate-900">ChIJN1t_tDeuEmsRUsoyG83frY4</code>) ke formulir pendaftaran.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 flex gap-2.5">
+                <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener noreferrer" 
+                    class="flex-1 py-3 bg-[#BE123C] hover:bg-[#E01A8A] text-white font-bold text-xs rounded-xl shadow-md transition-all text-center flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                    <span>Buka Place ID Finder</span>
+                </a>
+                <button onclick="closePlaceIdHelper()" class="py-3 px-5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/db.js"></script>
+    <script src="assets/js/i18n.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        lucide.createIcons();
+        if (window.KatayaI18n) {
+            window.KatayaI18n.renderSwitcher('indexLangSwitcher');
+        }
+    </script>
+</body>
+</html>
+

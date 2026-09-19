@@ -1,0 +1,2590 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Pengembang Kataya - Akses Khusus</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kataya: {
+                            navy: '#0A1931',
+                            cardNavy: '#0B1C3F',
+                            berry: '#BE123C',
+                            fuchsia: '#E01A8A',
+                            white: '#FFFFFF',
+                            textNavy: '#0A1931'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- QR Code Styling CDN -->
+    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <!-- JSZip & FileSaver CDN untuk Download Barcode Massal .PNG & .ZIP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- Standee Assets & Canvas Generator -->
+    <script src="assets/js/standee-assets.js"></script>
+    <script src="assets/js/standee-canvas.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#0A1931] text-slate-100 antialiased min-h-screen flex flex-col justify-between selection:bg-[#E01A8A]/30">
+
+    <!-- Header Portal Developer -->
+    <header class="bg-[#0B1C3F] border-b border-slate-800 sticky top-0 z-30 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white border border-slate-700 p-1 flex items-center justify-center shadow-lg overflow-hidden">
+                    <img src="assets/img/kataya-logo.jpg" alt="Logo Resmi Kataya" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg font-black text-white">Portal Pengembang Kataya</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#E01A8A] text-white">Akses Khusus</span>
+                    </div>
+                    <span class="text-xs text-slate-400">Monitoring seluruh bisnis, persetujuan aktivasi paket 1x pakai, dan tren rating</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button id="btnPinRequestNotification" onclick="openDevPinRequestsModal()" class="hidden relative px-3 py-1.5 rounded-xl bg-[#0A1931] hover:bg-slate-800 border border-amber-500/40 text-xs font-bold text-white flex items-center gap-2 transition-all shadow">
+                    <i data-lucide="bell" class="w-4 h-4 text-amber-400"></i>
+                    <span class="hidden sm:inline">Permintaan PIN</span>
+                    <span id="pinRequestBadgeCount" class="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white min-w-[18px] text-center">0</span>
+                </button>
+                <a href="index.html" class="text-xs font-semibold text-slate-400 hover:text-[#E01A8A] transition-colors">
+                    &larr; Ke Halaman Beranda
+                </a>
+                <button id="btnDevLogout" onclick="devLogout()" class="hidden px-3 py-1.5 rounded-lg bg-[#0A1931] hover:bg-slate-800 text-xs font-bold text-slate-300 border border-slate-700">
+                    Keluar
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN: Form Login Developer (Jika belum autentikasi) -->
+    <div id="devLoginContainer" class="flex-grow flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl text-center text-[#0A1931]">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-white border border-slate-200 p-1.5 flex items-center justify-center mb-4 shadow-md overflow-hidden">
+                <img src="assets/img/kataya-logo.jpg" alt="Logo Resmi Kataya" class="w-full h-full object-contain">
+            </div>
+            <h2 class="text-xl font-black text-[#0A1931] mb-1">Akses Khusus Developer</h2>
+            <p class="text-xs text-slate-500 mb-6">Halaman ini hanya untuk tim pengembang Kataya. Masukkan sandi otentikasi.</p>
+
+            <form id="formDevLogin" onsubmit="handleDevLogin(event)" class="space-y-4">
+                <div>
+                    <input type="password" id="devPinInput" maxlength="10" placeholder="Masukkan Sandi Akses" 
+                        class="w-full text-center tracking-widest text-lg font-mono py-3 px-4 bg-slate-50 border border-slate-300 rounded-xl text-[#0A1931] focus:border-[#BE123C] outline-none">
+                </div>
+                <div id="devPinError" class="text-xs text-[#BE123C] font-bold hidden">
+                    Sandi developer salah! Akses ditolak.
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-bold text-xs shadow-lg shadow-pink-900/30 transition-all">
+                    Buka Portal Developer
+                </button>
+            </form>
+            <div id="devForgotPinSection" class="hidden mt-4 pt-4 border-t border-slate-200 text-center">
+                <a id="devForgotPinLink" href="https://wa.me/6285856640045?text=Halo%20Creator,%20saya%20membutuhkan%20PIN%20baru%20untuk%20akses%20Portal%20Developer%20Kataya." target="_blank" class="text-xs font-bold text-[#E01A8A] hover:underline flex items-center justify-center gap-1.5">
+                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Minta PIN Baru via WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- KONTEN: Dashboard Utama Developer (Setelah Autentikasi Berhasil) -->
+        <main id="devMainDashboard" class="flex flex-col md:flex-row flex-grow w-full max-w-7xl mx-auto hidden">
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 bg-[#0B1C3F] border-r border-slate-800 p-4 space-y-2 shrink-0">
+            <button onclick="switchTab('tab-pending')" id="btn-tab-pending" class="dev-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] text-white font-bold text-sm shadow-md transition-all">
+                <i data-lucide="bell-ring" class="w-4 h-4"></i> Aktivasi Mitra
+            </button>
+            <button onclick="switchTab('tab-stats')" id="btn-tab-stats" class="dev-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 font-bold text-sm transition-all">
+                <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Statistik
+            </button>
+            <button onclick="switchTab('tab-biz')" id="btn-tab-biz" class="dev-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 font-bold text-sm transition-all">
+                <i data-lucide="briefcase" class="w-4 h-4"></i> Manajemen Bisnis
+            </button>
+            <button onclick="switchTab('tab-standee')" id="btn-tab-standee" class="dev-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 font-bold text-sm transition-all">
+                <i data-lucide="qr-code" class="w-4 h-4"></i> Standee Barcode
+            </button>
+            <button onclick="switchTab('tab-bot')" id="btn-tab-bot" class="dev-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 font-bold text-sm transition-all">
+                <i data-lucide="bot" class="w-4 h-4"></i> Bot WA &amp; Pengaturan
+            </button>
+        </aside>
+
+        <!-- Content Area -->
+        <section class="flex-grow p-4 sm:p-6 space-y-6 w-full max-w-full overflow-hidden">
+            <!-- BANNER NOTIFIKASI REAL-TIME PERMINTAAN PIN DARI MITRA -->
+            <div id="bannerNewPinRequest" class="hidden bg-gradient-to-r from-amber-950/90 via-[#0B1C3F] to-amber-950/90 border-2 border-amber-500 rounded-3xl p-5 shadow-2xl animate-pulse">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/40 shadow-inner">
+                            <i data-lucide="bell-ring" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-black uppercase mb-1">
+                                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                                Permintaan PIN Baru Masuk
+                            </div>
+                            <h4 class="text-base font-black text-white" id="bannerPinReqTitle">Ada Mitra Membutuhkan PIN Baru</h4>
+                            <p class="text-xs text-amber-100/90 mt-0.5 leading-relaxed" id="bannerPinReqDesc">
+                                Mitra meminta PIN baru karena salah PIN 3x. PIN baru aman dan belum dikirimkan ke mitra sebelum Anda menekan tombol kirim.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="shrink-0 flex items-center gap-2 w-full md:w-auto justify-end">
+                        <button onclick="openDevPinRequestsModal()" class="w-full md:w-auto px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-[#0A1931] font-black text-xs rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            <span id="bannerPinReqBtnText">Buka &amp; Kirim PIN Baru</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-stats" class="dev-tab-content hidden">
+                <!-- STATISTIK GLOBAL DEVELOPER -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="bg-[#0B1C3F] border border-slate-800 p-5 rounded-2xl">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Mitra</span>
+                <h3 id="devStatTotalBiz" class="text-3xl font-black text-white mt-1">0</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Semua bisnis terdaftar</p>
+            </div>
+            <div class="bg-[#0B1C3F] border border-slate-800 p-5 rounded-2xl">
+                <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Bisnis Aktif</span>
+                <h3 id="devStatActiveBiz" class="text-3xl font-black text-emerald-400 mt-1">0</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Sudah diverifikasi</p>
+            </div>
+            <div class="bg-[#0B1C3F] border border-slate-800 p-5 rounded-2xl">
+                <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Menunggu Aktivasi</span>
+                <h3 id="devStatPendingBiz" class="text-3xl font-black text-amber-400 mt-1">0</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Perlu disetujui 1x</p>
+            </div>
+            <div class="bg-[#0B1C3F] border border-slate-800 p-5 rounded-2xl">
+                <span class="text-xs font-bold text-[#E01A8A] uppercase tracking-wider">Total Ulasan</span>
+                <h3 id="devStatTotalReviews" class="text-3xl font-black text-[#E01A8A] mt-1">0</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Interaksi keseluruhan</p>
+            </div>
+            <div class="bg-[#0B1C3F] border border-rose-900/60 p-5 rounded-2xl">
+                <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">Tidak Aktif > 1 Thn</span>
+                <h3 id="devStatExpiredBiz" class="text-3xl font-black text-rose-400 mt-1">0</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Siap hapus otomatis</p>
+            </div>
+        </div>
+
+        <!-- BANNER PERINGATAN RETENSI AKUN TIDAK AKTIF > 1 TAHUN -->
+        <div id="retentionAlertCard" class="hidden bg-[#0B1C3F] border-2 border-rose-500/80 rounded-3xl p-6 shadow-2xl">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 border border-rose-500/40">
+                        <i data-lucide="clock" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-black uppercase mb-1">
+                            Kebijakan Retensi Akun (1 Tahun Tanpa Aktivitas)
+                        </div>
+                        <h4 class="text-base font-bold text-white" id="retentionAlertTitle">Ditemukan Akun Tidak Aktif Selama Lebih Dari 1 Tahun</h4>
+                        <p class="text-xs text-rose-200 mt-0.5 leading-relaxed" id="retentionAlertDesc">
+                            Akun tanpa aktivitas selama 365 hari dijadwalkan otomatis dihapus. Kirim konfirmasi via WhatsApp ke pemilik bisnis sebelum pembersihan dilakukan.
+                        </p>
+                    </div>
+                </div>
+                <div class="shrink-0 flex items-center gap-2">
+                    <button onclick="handleAutoCleanupExpired()" class="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all flex items-center gap-1.5">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <span>Hapus Otomatis Akun > 1 Thn</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        
+            </div>
+            <div id="tab-pending" class="dev-tab-content block space-y-6">
+                <!-- KOLOM PENCARIAN PERMINTAAN AKTIVASI MITRA -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#0B1C3F] p-4 rounded-2xl border border-slate-800 shadow-md">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="devPendingSearchInput" oninput="handleDevPendingSearch()" placeholder="Cari permohonan mitra (nama bisnis, WhatsApp, Place ID)..."
+                            class="w-full bg-[#0A1931] border border-slate-700 text-white rounded-xl pl-10 pr-4 py-2.5 text-xs focus:border-[#E01A8A] outline-none">
+                    </div>
+                    <button onclick="renderPendingRequestsTop()" class="px-4 py-2.5 bg-[#0A1931] hover:bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 flex items-center justify-center gap-2 shrink-0 transition-colors">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Segarkan Antrean
+                    </button>
+                </div>
+
+                <!-- SECTION PERMINTAAN AKTIVASI PALING ATAS (DAFTAR PERMINTAAN BARU) -->
+                <div id="pendingRequestsTopSection" class="hidden space-y-4">
+                    <!-- Diisi secara dinamis via JavaScript renderPendingRequestsTop() -->
+                </div>
+
+        <!-- 5. CARD AKTIVASI KHUSUS (HANYA BERLAKU 1 KALI) -->
+        <div id="activationRequestCard" class="hidden bg-[#0B1C3F] border-2 border-[#E01A8A] rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="space-y-2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E01A8A] text-white text-xs font-black uppercase">
+                        <i data-lucide="bell-ring" class="w-3.5 h-3.5"></i> Permintaan Aktivasi Pembayaran Masuk
+                    </div>
+                    <h3 class="text-2xl font-black text-white" id="actBizName">Memuat Nama Bisnis...</h3>
+                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-300">
+                        <span>Paket: <strong id="actPackageName" class="text-[#E01A8A] uppercase">Single Outlet</strong></span>
+                        <span>&bull;</span>
+                        <span>WhatsApp Owner: <strong id="actBizWa" class="text-white">+62...</strong></span>
+                        <span>&bull;</span>
+                        <span>Place ID: <code id="actBizPlaceId" class="font-mono text-pink-300">...</code></span>
+                    </div>
+                    <p class="text-xs text-slate-300 max-w-2xl">
+                        Pastikan bukti transfer telah dicek di rekening resmi atas nama <strong>Widha Vebri Mardiawan</strong> sebelum menyetujui aktivasi.
+                    </p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto" id="actActionButtons">
+                    <button type="button" id="btnConfirmActivation" onclick="confirmActivationNow()" 
+                        class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-black text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                        <span>Setujui & Aktifkan Fitur (1x Pakai)</span>
+                    </button>
+                    <button type="button" onclick="dismissActivationCard()" class="w-full sm:w-auto px-4 py-3.5 rounded-xl bg-[#0A1931] hover:bg-slate-800 text-xs font-bold text-slate-300 border border-slate-700">
+                        Lewati
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD SUKSES: AKTIVASI DISETUJUI & SISTEM TELAH AKTIF -->
+        <div id="activationSuccessCard" class="hidden bg-[#0B1C3F] border-2 border-emerald-500 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="space-y-2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500 text-slate-950 text-xs font-black uppercase">
+                        <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Aktivasi Berhasil Disetujui
+                    </div>
+                    <h3 class="text-2xl font-black text-white" id="succBizName">Nama Bisnis</h3>
+                    <p class="text-xs text-emerald-200 max-w-xl">
+                        Sistem ulasan bisnis untuk <strong id="succBizNameDesc" class="text-white">Mitra</strong> telah <strong>AKTIF</strong> secara resmi. Layar pemilik yang sedang menunggu akan otomatis membuka halaman ulasan.
+                    </p>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 pt-2">
+                        <span class="text-xs text-slate-400 font-bold uppercase">Link Review:</span>
+                        <div class="flex items-center gap-2 bg-[#0A1931] px-3 py-1.5 rounded-xl border border-slate-700 max-w-md">
+                            <input type="text" id="succReviewUrlInput" readonly class="bg-transparent text-xs text-pink-300 font-mono w-full outline-none">
+                            <button type="button" onclick="copySuccReviewUrl()" class="px-2 py-0.5 bg-gradient-to-r from-[#BE123C] to-[#E01A8A] text-white rounded text-[10px] font-bold shrink-0">
+                                Salin
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto shrink-0">
+                    <a id="succTestReviewBtn" href="#" target="_blank" rel="noopener noreferrer" 
+                        class="w-full sm:w-auto px-5 py-3 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-black text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                        <span>Buka Halaman Ulasan</span>
+                    </a>
+                    <button type="button" onclick="dismissSuccessCard()" class="w-full sm:w-auto px-4 py-3 rounded-xl bg-[#0A1931] hover:bg-slate-800 text-xs font-bold text-slate-300 border border-slate-700">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. BANNER PERINGATAN JIKA TAUTAN AKTIVASI SUDAH KEDALUWARSA / TERPAKAI -->
+        <div id="activationExpiredCard" class="hidden bg-[#0B1C3F] border-2 border-rose-500 rounded-3xl p-6 shadow-2xl">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 border border-rose-500/40">
+                    <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Tautan Aktivasi Sudah Kedaluwarsa (Telah Digunakan)</h3>
+                    <p class="text-xs text-rose-200 mt-1" id="actExpiredMessage">
+                        Tautan aktivasi untuk bisnis ini sudah pernah disetujui sebelumnya. Setiap tautan aktivasi hanya berlaku 1 kali pakai demi keamanan.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        
+            </div>
+            <div id="tab-biz" class="dev-tab-content hidden">
+                <!-- TABEL DATA LENGKAP PENGEMBANG -->
+        <div class="bg-[#0B1C3F] border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+            <div class="p-6 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-lg font-bold text-white">Daftar Seluruh Bisnis Mitra Kataya</h3>
+                    <p class="text-xs text-slate-400">Nama Bisnis, Kontak WhatsApp, Link Google Review, Perkembangan Rating, dan Waktu Terakhir Diakses</p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                    <div class="relative min-w-[240px]">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="devBizSearchInput" oninput="handleDevBizSearch()" placeholder="Cari nama bisnis, WhatsApp, paket..."
+                            class="w-full bg-[#0A1931] border border-slate-700 text-white rounded-xl pl-9 pr-3 py-2 text-xs focus:border-[#E01A8A] outline-none">
+                    </div>
+                    <button type="button" onclick="downloadAllMitraStandeesZip()" id="btnDownloadAllMitraZip" 
+                        class="px-3.5 py-2 bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white rounded-xl text-xs font-bold shadow flex items-center justify-center gap-1.5 shrink-0 transition-all">
+                        <i data-lucide="folder-archive" class="w-3.5 h-3.5"></i>
+                        <span id="labelAllMitraZip">Unduh Semua Barcode Mitra (.PNG ZIP)</span>
+                    </button>
+                    <button onclick="renderDeveloperList()" class="px-3 py-2 bg-[#0A1931] hover:bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-1.5 shrink-0 transition-colors">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-[#0A1931] text-slate-300 uppercase tracking-wider font-bold border-b border-slate-800">
+                        <tr>
+                            <th class="p-4">Nama Bisnis & Paket</th>
+                            <th class="p-4">Status Fitur</th>
+                            <th class="p-4">Nomer WhatsApp</th>
+                            <th class="p-4">Link Alamat (Google Review)</th>
+                            <th class="p-4">Perkembangan Rating</th>
+                            <th class="p-4">Terakhir Diakses & Masa Aktif</th>
+                            <th class="p-4 text-center">Aksi Developer</th>
+                        </tr>
+                    </thead>
+                    <tbody id="devBusinessTableBody" class="divide-y divide-slate-800">
+                        <!-- Diisi via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+            </div>
+            <div id="tab-standee" class="dev-tab-content hidden">
+                <!-- ================= SECTION: GENERATOR BARCODE STANDEE MEJA (BACKGROUND RESMI) ================= -->
+        <div class="bg-[#0B1C3F] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                        <span class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#BE123C] to-[#E01A8A] flex items-center justify-center text-white font-bold shadow">
+                            <i data-lucide="qr-code" class="w-4 h-4"></i>
+                        </span>
+                        <h3 class="text-lg font-black text-white">Generator Barcode Akrilik (Latar Resmi Kataya)</h3>
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        Cetak kartu barcode dengan background berry-pink resmi. Barcode dapat disebar ke calon mitra untuk <strong>mempermudah pendaftaran langsung</strong> dan <strong>otomatis beralih menjadi Barcode Ulasan Google</strong> setelah bisnis diaktifkan.
+                    </p>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-[#E01A8A]/20 border border-[#E01A8A]/40 text-[#E01A8A] text-xs font-black uppercase shrink-0">
+                    Dual-Phase QR Engine
+                </span>
+            </div>
+
+            <!-- Sub-nav Standee: Satuan vs Massal -->
+            <div class="flex items-center gap-2 p-1.5 bg-[#0A1931] rounded-2xl border border-slate-700 w-full sm:w-fit">
+                <button type="button" onclick="switchStandeeSubTab('single')" id="btnSubStandeeSingle" 
+                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-[#BE123C] to-[#E01A8A] text-white shadow flex items-center gap-1.5">
+                    <i data-lucide="file" class="w-3.5 h-3.5"></i> Standee Satuan
+                </button>
+                <button type="button" onclick="switchStandeeSubTab('batch')" id="btnSubStandeeBatch" 
+                    class="px-4 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center gap-1.5">
+                    <i data-lucide="layers" class="w-3.5 h-3.5"></i> Cetak Massal (Batch)
+                </button>
+            </div>
+
+            <!-- MODE 1: STANDEE SATUAN -->
+            <div id="sectionStandeeSingle" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <!-- Kolom Kiri: Pengaturan Generator -->
+                <div class="lg:col-span-5 space-y-4">
+                    <!-- Opsi Mode Pembuatan -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Tujuan Barcode Standee</label>
+                        <select id="selectStandeeMode" onchange="handleStandeeModeChange()" 
+                            class="w-full p-2.5 rounded-xl bg-[#0A1931] border border-slate-700 text-xs text-white focus:border-[#BE123C] outline-none">
+                            <option value="unclaimed">✨ Barcode Calon Mitra Baru (Fase Pendaftaran Cepat)</option>
+                            <option value="registered">⭐ Barcode Mitra Terdaftar (Fase Ulasan Google Langsung)</option>
+                        </select>
+                    </div>
+
+                    <!-- Dropdown Mitra Terdaftar (Jika Mode registered) -->
+                    <div id="wrapperSelectBiz" class="hidden">
+                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Pilih Bisnis Mitra</label>
+                        <select id="selectStandeeBiz" onchange="handleSelectBizChange()" 
+                            class="w-full p-2.5 rounded-xl bg-[#0A1931] border border-slate-700 text-xs text-white focus:border-[#BE123C] outline-none">
+                            <!-- Diisi via JS -->
+                        </select>
+                    </div>
+
+                    <!-- Kode Barcode Unik -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="text-xs font-bold text-slate-300 uppercase">Kode Barcode</label>
+                            <button type="button" onclick="randomizeStandeeCode()" class="text-[11px] text-[#E01A8A] hover:underline font-bold flex items-center gap-1">
+                                <i data-lucide="dice-5" class="w-3.5 h-3.5"></i> Acak Kode
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="inputStandeeCode" required placeholder="Contoh: STAND-8821" 
+                                class="w-full p-2.5 rounded-xl bg-[#0A1931] border border-slate-700 text-xs font-mono font-bold text-[#E01A8A] focus:border-[#BE123C] outline-none uppercase">
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">Kode unik yang tercetak pada kartu fisik.</p>
+                    </div>
+
+                    <!-- PENGATURAN UKURAN CETAK CENTIMETER (CM) -->
+                    <div class="p-3.5 bg-[#0B1C3F] border border-slate-700 rounded-2xl space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-bold text-white flex items-center gap-1.5 uppercase">
+                                <i data-lucide="ruler" class="w-3.5 h-3.5 text-[#E01A8A]"></i>
+                                <span>Ukuran Cetak Standee (Centimeter / cm)</span>
+                            </label>
+                            <span id="devStandeeSizeBadge" class="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-[#BE123C]/30 text-[#E01A8A] border border-[#BE123C]/40">10 × 15 cm</span>
+                        </div>
+                        <!-- Input Angka Custom Lebar x Tinggi (cm) -->
+                        <div class="grid grid-cols-2 gap-3 pt-1 border-t border-slate-800">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1">LEBAR (CM)</label>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="number" id="inputStandeeWidthCm" value="10" min="5" max="100" step="0.5" onchange="onDevStandeeSizeChange()" oninput="onDevStandeeSizeChange()"
+                                        class="w-full p-2 rounded-xl bg-[#0A1931] border border-slate-700 text-xs font-bold text-white text-center focus:border-[#BE123C] outline-none">
+                                    <span class="text-xs font-bold text-slate-400">cm</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1">TINGGI (CM)</label>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="number" id="inputStandeeHeightCm" value="15" min="5" max="150" step="0.5" onchange="onDevStandeeSizeChange()" oninput="onDevStandeeSizeChange()"
+                                        class="w-full p-2 rounded-xl bg-[#0A1931] border border-slate-700 text-xs font-bold text-white text-center focus:border-[#BE123C] outline-none">
+                                    <span class="text-xs font-bold text-slate-400">cm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 italic">Barcode QR code, teks, dan logo otomatis menyesuaikan secara proporsional sesuai ukuran cm.</p>
+                    </div>
+
+                    <!-- Info Desain Kartu Barcode Resmi -->
+                    <div class="p-3.5 rounded-xl bg-[#0B1C3F] border border-slate-700 space-y-2">
+                        <div class="flex items-center gap-3">
+                            <img src="assets/img/google-reviews-logo.png" alt="Google Reviews" class="h-8 object-contain">
+                            <div>
+                                <div class="text-xs font-bold text-white">Logo Resmi Google Reviews 5★</div>
+                                <div class="text-[10px] text-slate-400">Judul kartu otomatis memakai logo Google Reviews & 5 bintang emas</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 pt-1 border-t border-slate-800 text-[11px] text-slate-300">
+                            <span class="px-2 py-0.5 rounded bg-[#BE123C]/30 text-[#E01A8A] font-bold text-[10px] uppercase">NFC + QR</span>
+                            <span>Instruksi cetak: <strong>TAP DAN SCAN</strong></span>
+                        </div>
+                        <input type="hidden" id="inputStandeeTitle" value="Google Reviews">
+                        <input type="hidden" id="inputStandeeSubtitle" value="">
+                    </div>
+
+                    <!-- Tautan Tujuan Akhir Barcode -->
+                    <div class="p-3.5 rounded-xl bg-[#0A1931] border border-slate-700 space-y-1.5 text-xs">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Tautan Barcode Pintar (Router):</span>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="inputStandeeTargetUrl" readonly 
+                                class="w-full bg-transparent text-[11px] font-mono text-pink-300 outline-none select-all truncate">
+                            <button type="button" onclick="copyStandeeTargetUrl()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-[10px] font-bold text-white shrink-0">
+                                Salin
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi Generate -->
+                    <button type="button" onclick="refreshStandeeCanvasPreview()" 
+                        class="w-full py-3 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-black text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        <span>Perbarui Pratinjau Barcode</span>
+                    </button>
+                </div>
+
+                <!-- Kolom Kanan: Pratinjau Grafis Standee & Download -->
+                <div class="lg:col-span-7 bg-[#0A1931] p-5 rounded-2xl border border-slate-700 flex flex-col items-center justify-center space-y-4">
+                    <div class="w-full flex items-center justify-between text-xs pb-2 border-b border-slate-800">
+                        <span class="font-bold text-slate-300">Pratinjau Kartu Barcode Siap Cetak</span>
+                        <span id="devStandeeDimensionInfo" class="text-[10px] text-slate-400 font-mono">Ukuran: 10 × 15 cm (HD)</span>
+                    </div>
+
+                    <!-- Container Canvas dengan Scaling Responsif -->
+                    <div id="devStandeeMockupContainer" class="w-full max-w-[340px] aspect-[10/15] rounded-2xl overflow-hidden shadow-2xl border border-slate-700 relative bg-slate-900 flex items-center justify-center transition-all duration-300">
+                        <canvas id="standeePreviewCanvas" class="w-full h-full object-contain"></canvas>
+                        <div id="standeeCanvasLoading" class="absolute inset-0 bg-[#0A1931]/80 flex flex-col items-center justify-center gap-2">
+                            <i data-lucide="loader-2" class="w-6 h-6 text-[#E01A8A] animate-spin"></i>
+                            <span class="text-xs font-bold text-slate-300">Menggambar Kartu Barcode...</span>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Download & Uji Tautan -->
+                    <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <button type="button" onclick="downloadCurrentStandeePng()" 
+                            class="py-3 px-4 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span id="btnDownloadDevStandeeLabel">Unduh Kartu Barcode (10×15 cm HD)</span>
+                        </button>
+                        <a id="btnTestStandeeUrl" href="#" target="_blank" rel="noopener noreferrer" 
+                            class="py-3 px-4 rounded-xl bg-[#0B1C3F] hover:bg-slate-800 border border-slate-700 text-white font-bold text-xs transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                            <span>Uji Buka Tautan Barcode &rarr;</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODE 2: CETAK MASSAL (BATCH PRINTING) -->
+            <div id="sectionStandeeBatch" class="hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- Form Pengaturan Cetak Massal -->
+                    <div class="lg:col-span-4 bg-[#0A1931] p-5 rounded-2xl border border-slate-700 space-y-4">
+                        <div class="flex items-center gap-2 pb-2 border-b border-slate-800">
+                            <i data-lucide="layers" class="w-4 h-4 text-[#E01A8A]"></i>
+                            <h4 class="text-sm font-black text-white">Pengaturan Barcode Massal</h4>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Jumlah Kartu Barcode</label>
+                            <input type="number" id="inputBatchCount" min="1" max="50" value="6" 
+                                class="w-full p-2.5 rounded-xl bg-[#0B1C3F] border border-slate-700 text-sm font-bold text-white focus:border-[#BE123C] outline-none">
+                            <p class="text-[11px] text-slate-400 mt-1">Setiap standee akan dibuatkan <strong>kode unik yang berbeda</strong>.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Tujuan Barcode</label>
+                            <select id="selectBatchMode" onchange="handleBatchModeChange()" 
+                                class="w-full p-2.5 rounded-xl bg-[#0B1C3F] border border-slate-700 text-xs text-white focus:border-[#BE123C] outline-none">
+                                <option value="unclaimed">✨ Barcode Calon Mitra Baru (Siap Klaim Pendaftaran)</option>
+                                <option value="registered">⭐ Barcode Mitra Terdaftar Tertentu</option>
+                            </select>
+                        </div>
+
+                        <div id="wrapperBatchSelectBiz" class="hidden">
+                            <label class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Pilih Bisnis Mitra</label>
+                            <select id="selectBatchBiz" 
+                                class="w-full p-2.5 rounded-xl bg-[#0B1C3F] border border-slate-700 text-xs text-white focus:border-[#BE123C] outline-none">
+                                <!-- Diisi via JS -->
+                            </select>
+                        </div>
+
+                        <!-- Ukuran Lembar Standee Batch dlm Centimeter -->
+                        <div class="p-3.5 bg-[#0B1C3F] border border-slate-700 rounded-2xl space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-bold text-white flex items-center gap-1.5 uppercase">
+                                    <i data-lucide="ruler" class="w-3.5 h-3.5 text-[#E01A8A]"></i>
+                                    <span>Ukuran Kartu Batch (Centimeter / cm)</span>
+                                </label>
+                                <span id="devBatchSizeBadge" class="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-[#BE123C]/30 text-[#E01A8A] border border-[#BE123C]/40">10 × 15 cm</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 mb-1">LEBAR (CM)</label>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="number" id="inputBatchWidthCm" value="10" min="5" max="100" step="0.5" onchange="onDevBatchSizeChange()" oninput="onDevBatchSizeChange()"
+                                            class="w-full p-2 rounded-xl bg-[#0A1931] border border-slate-700 text-xs font-bold text-white text-center focus:border-[#BE123C] outline-none">
+                                        <span class="text-xs font-bold text-slate-400">cm</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 mb-1">TINGGI (CM)</label>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="number" id="inputBatchHeightCm" value="15" min="5" max="150" step="0.5" onchange="onDevBatchSizeChange()" oninput="onDevBatchSizeChange()"
+                                            class="w-full p-2 rounded-xl bg-[#0A1931] border border-slate-700 text-xs font-bold text-white text-center focus:border-[#BE123C] outline-none">
+                                        <span class="text-xs font-bold text-slate-400">cm</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Awalan Label Meja</label>
+                            <input type="text" id="inputBatchPrefix" value="Standee Meja" placeholder="Contoh: Standee Meja / Kasir" 
+                                class="w-full p-2.5 rounded-xl bg-[#0B1C3F] border border-slate-700 text-xs text-white focus:border-[#BE123C] outline-none">
+                        </div>
+
+                        <button type="button" onclick="handleGenerateBatchStandees()" 
+                            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-black text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            <span>Generate Batch Barcode Baru</span>
+                        </button>
+                    </div>
+
+                    <!-- Panel Hasil Batch Standee -->
+                    <div class="lg:col-span-8 bg-[#0A1931] p-5 rounded-2xl border border-slate-700 space-y-4">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+                            <div>
+                                <h4 class="text-sm font-black text-white" id="batchTitleHeader">Daftar Standee Hasil Batch</h4>
+                                <p class="text-xs text-slate-400" id="batchSubHeader">Siap dicetak pada lembar A4 / akrilik potong atau diunduh.</p>
+                            </div>
+                            <div class="flex items-center gap-2 flex-wrap" id="batchActionGroup">
+                                <button type="button" onclick="downloadAllBatchStandeesZip()" id="btnBatchDownloadZip" 
+                                    class="px-3.5 py-2 bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white rounded-xl text-xs font-bold shadow flex items-center gap-1.5 transition-all">
+                                    <i data-lucide="folder-archive" class="w-3.5 h-3.5"></i>
+                                    <span id="labelBatchDownloadZip">Unduh Semua (.PNG ZIP Massal)</span>
+                                </button>
+                                <button type="button" onclick="downloadAllBatchStandeesDirect()" id="btnBatchDownloadDirect" 
+                                    class="px-3 py-2 bg-[#0B1C3F] hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold shadow flex items-center gap-1.5 transition-all">
+                                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                    <span>Unduh Semua (.PNG Langsung)</span>
+                                </button>
+                                <button type="button" onclick="printBatchSheet()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow flex items-center gap-1.5 transition-all">
+                                    <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                                    <span>Cetak Lembar Massal (Print / PDF)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Grid Hasil Batch -->
+                        <div id="batchStandeeGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                            <div class="col-span-full py-12 text-center text-slate-400 text-xs">
+                                <i data-lucide="layers" class="w-8 h-8 text-slate-500 mx-auto mb-2 opacity-50"></i>
+                                Belum ada standee massal yang dibuat. Klik tombol "Generate Batch Barcode Baru" di samping.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            </div>
+
+            <!-- TAB 5: BOT WHATSAPP & PENGATURAN -->
+            <div id="tab-bot" class="dev-tab-content hidden space-y-6">
+                <!-- HEADER TAB BOT -->
+                <div class="bg-[#0B1C3F] border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#BE123C] to-[#E01A8A] flex items-center justify-center text-white font-bold shadow">
+                                <i data-lucide="bot" class="w-5 h-5"></i>
+                            </span>
+                            <div>
+                                <h3 class="text-lg font-black text-white">Bot WhatsApp Developer &amp; Otomatisasi PIN</h3>
+                                <p class="text-xs text-slate-400">Pengaturan nomor bot WhatsApp pengembang dan pemantauan otomatisasi pengiriman PIN baru acak.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-black uppercase flex items-center gap-1.5 shrink-0">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        Bot Online &amp; Aktif
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- KARTU 1: PENGATURAN NOMOR BOT DEVELOPER -->
+                    <div class="lg:col-span-5 bg-[#0B1C3F] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+                        <div class="flex items-center gap-2 pb-3 border-b border-slate-800">
+                            <i data-lucide="phone-call" class="w-4 h-4 text-[#E01A8A]"></i>
+                            <h4 class="text-sm font-black text-white">Nomor Bot WhatsApp Developer</h4>
+                        </div>
+
+                        <div class="p-4 bg-[#0A1931] rounded-2xl border border-slate-700 space-y-2">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Nomor Bot Aktif Saat Ini:</span>
+                            <div class="flex items-center justify-between">
+                                <span id="currentBotPhoneDisplay" class="text-xl font-black font-mono text-emerald-400">+62 858-5664-0045</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 border border-emerald-700 text-emerald-300">Tersimpan</span>
+                            </div>
+                        </div>
+
+                        <form id="formUpdateBotPhone" onsubmit="handleSaveBotPhone(event)" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Ubah Nomor WhatsApp Bot</label>
+                                <input type="text" id="inputNewBotPhone" required placeholder="Contoh: 085856640045 atau 6285856640045"
+                                    class="w-full p-3 rounded-xl bg-[#0A1931] border border-slate-700 text-xs text-white font-mono focus:border-[#BE123C] outline-none">
+                            </div>
+                            <div id="botPhoneAlert" class="text-xs font-bold hidden"></div>
+                            <button type="submit" 
+                                class="w-full py-3 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="save" class="w-4 h-4"></i>
+                                <span>Simpan Nomor Bot Baru</span>
+                            </button>
+                        </form>
+
+                        <div class="p-3.5 bg-indigo-950/40 border border-indigo-800/60 rounded-2xl text-[11px] text-slate-300 space-y-1 leading-relaxed">
+                            <span class="font-bold text-pink-300 flex items-center gap-1">
+                                <i data-lucide="info" class="w-3.5 h-3.5"></i> Integrasi Menyeluruh:
+                            </span>
+                            <p>Nomor ini otomatis disinkronkan ke seluruh aplikasi: link pendaftaran aktivasi, filter keluhan bintang 1-3, dan bot permintaan reset PIN acak saat mitra salah 3x.</p>
+                        </div>
+                    </div>
+
+                    <!-- KARTU 2: UJI GENERATOR BOT PIN BARU ACAK -->
+                    <div class="lg:col-span-7 bg-[#0B1C3F] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="key-round" class="w-4 h-4 text-amber-400"></i>
+                                <h4 class="text-sm font-black text-white">Uji Bot Permintaan PIN Baru Acak</h4>
+                            </div>
+                            <span class="text-[10px] text-slate-400">Simulasi Respon Bot</span>
+                        </div>
+
+                        <p class="text-xs text-slate-400">
+                            Uji langsung cara bot memproses permintaan PIN baru: bot akan membuat PIN 4 digit acak, memperbarui database mitra secara otomatis, dan membuka WhatsApp dengan pesan terverifikasi langsung ke nomor mitra.
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                            <div class="sm:col-span-8">
+                                <select id="selectTestBotBiz" 
+                                    class="w-full p-3 rounded-xl bg-[#0A1931] border border-slate-700 text-xs text-white focus:border-[#BE123C] outline-none">
+                                    <!-- Diisi via JS -->
+                                </select>
+                            </div>
+                            <div class="sm:col-span-4">
+                                <button type="button" onclick="handleTestBotPinGeneration()" 
+                                    class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs shadow transition-all flex items-center justify-center gap-1.5">
+                                    <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                                    <span>Jalankan Bot</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Hasil Uji Coba Bot (Aman Tanpa Plain PIN) -->
+                        <div id="testBotResultContainer" class="hidden p-4 rounded-2xl bg-[#0A1931] border border-slate-700 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-300">Status Keamanan Pengiriman PIN:</span>
+                                <span id="testBotGeneratedPin" class="text-xs font-black font-mono text-emerald-400 tracking-wider px-3 py-1 bg-emerald-950/60 border border-emerald-700 rounded-xl flex items-center gap-1.5">
+                                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                    •••• (Terkirim Rahasia ke WA Mitra)
+                                </span>
+                            </div>
+                            <div class="text-[11px] text-slate-300 font-mono bg-slate-900 p-3 rounded-xl border border-slate-800 whitespace-pre-line" id="testBotMessagePreview">
+                            </div>
+                            <div class="flex items-center justify-end gap-2">
+                                <a id="testBotWaLink" href="#" target="_blank" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all">
+                                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                                    <span>Buka WhatsApp Hasil Bot (Terkirim ke Mitra)</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KARTU 2.5: DAFTAR PERMINTAAN PIN BARU DARI MITRA -->
+                <div class="bg-[#0B1C3F] border border-amber-500/40 rounded-3xl overflow-hidden shadow-xl">
+                    <div class="p-6 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-r from-amber-950/30 to-transparent">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center shadow">
+                                <i data-lucide="key" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h4 class="text-sm font-black text-white">Daftar Permintaan PIN Baru Mitra</h4>
+                                    <span id="tab5PendingBadge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40">0 Menunggu</span>
+                                </div>
+                                <p class="text-xs text-slate-400">PIN baru acak dibuat dan dikirimkan ke WhatsApp mitra secara resmi saat Anda menekan tombol "Kirim PIN"</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="updatePinRequestNotifications()" class="px-3 py-1.5 bg-[#0A1931] hover:bg-slate-800 border border-slate-700 rounded-lg text-xs font-bold text-white flex items-center gap-1.5 transition-all">
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Segarkan Permintaan
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-[#0A1931] text-slate-300 uppercase tracking-wider font-bold border-b border-slate-800">
+                                <tr>
+                                    <th class="p-4">Waktu Permintaan</th>
+                                    <th class="p-4">Bisnis &amp; ID</th>
+                                    <th class="p-4">No. WhatsApp Mitra</th>
+                                    <th class="p-4">Status</th>
+                                    <th class="p-4 text-right">Tindakan Developer</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tab5PinRequestsTableBody" class="divide-y divide-slate-800">
+                                <!-- Diisi via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- KARTU 3: LOG AKTIVITAS BOT WHATSAPP DEVELOPER (REALTIME) -->
+                <div class="bg-[#0B1C3F] border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+                    <div class="p-6 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-[#E01A8A]/20 border border-[#E01A8A]/40 text-[#E01A8A] flex items-center justify-center">
+                                <i data-lucide="history" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-black text-white">Log Aktivitas Bot Permintaan PIN Baru</h4>
+                                <p class="text-xs text-slate-400">Riwayat otomatisasi pembuatan PIN acak saat mitra salah 3x atau meminta PIN baru via bot WhatsApp</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="renderBotLogsTable()" class="px-3 py-1.5 bg-[#0A1931] hover:bg-slate-800 border border-slate-700 rounded-lg text-xs font-bold text-white flex items-center gap-1.5">
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Segarkan Log
+                            </button>
+                            <button onclick="handleClearBotLogs()" class="px-3 py-1.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-700 text-rose-300 rounded-lg text-xs font-bold flex items-center gap-1.5">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Bersihkan Log
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-[#0A1931] text-slate-300 uppercase tracking-wider font-bold border-b border-slate-800">
+                                <tr>
+                                    <th class="p-4">Waktu</th>
+                                    <th class="p-4">Nama Bisnis &amp; ID</th>
+                                    <th class="p-4">No. WhatsApp Mitra</th>
+                                    <th class="p-4">Status Pengiriman PIN</th>
+                                    <th class="p-4">Pengirim Bot</th>
+                                    <th class="p-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="botLogsTableBody" class="divide-y divide-slate-800">
+                                <!-- Diisi via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        async function switchTab(tabId) {
+            document.querySelectorAll('.dev-tab-content').forEach(el => el.classList.add('hidden'));
+            const targetContent = document.getElementById(tabId);
+            if (targetContent) targetContent.classList.remove('hidden');
+            
+            document.querySelectorAll('.dev-tab-btn').forEach(btn => {
+                btn.className = 'dev-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 font-bold text-sm transition-all';
+            });
+            
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.className = 'dev-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#BE123C] to-[#E01A8A] text-white font-bold text-sm shadow-md transition-all';
+            }
+            
+            if (tabId === 'tab-standee') {
+                setTimeout(refreshStandeeCanvasPreview, 50);
+            } else if (tabId === 'tab-pending') {
+                await renderPendingRequestsTop();
+                await updatePinRequestNotifications();
+            } else if (tabId === 'tab-stats' || tabId === 'tab-biz') {
+                await renderDeveloperList();
+            } else if (tabId === 'tab-bot') {
+                await renderBotLogsTable();
+                await initBotSettings();
+                await updatePinRequestNotifications();
+            }
+
+            if (window.lucide) lucide.createIcons();
+        }
+    </script>
+
+    <!-- Footer Developer -->
+    <footer class="bg-[#0B1C3F] border-t border-slate-800 py-6 text-center text-xs text-slate-400 space-y-2">
+        <div class="flex items-center justify-center gap-2">
+            <div class="w-6 h-6 rounded-md bg-white border border-slate-700 p-0.5 shadow-xs overflow-hidden inline-flex items-center justify-center">
+                <img src="assets/img/kataya-logo.jpg" alt="Logo Kataya" class="w-full h-full object-contain">
+            </div>
+            <span class="font-bold text-slate-300">Kataya Smart Review Flow</span>
+        </div>
+        <p>&copy; 2026 Kataya Smart Review Flow &bull; Portal Khusus Developer &bull; Seluruh Hak Cipta Dilindungi</p>
+        <p class="text-[10px] text-slate-500">Google & Google Maps adalah merek dagang milik Google LLC. Kataya Smart Review Flow beroperasi secara independen.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/db.js"></script>
+    <script>
+        let targetBizToActivate = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkExistingDevAuth();
+
+            // Auto refresh
+            setInterval(async () => {
+                if (isDevAuthenticated()) {
+                    await renderPendingRequestsTop();
+                    await renderDeveloperList();
+                    await updatePinRequestNotifications();
+                }
+            }, 3000);
+        });
+
+        // Event listener saat ada permintaan PIN baru atau status berubah
+        window.addEventListener('kataya_pin_requests_updated', async () => {
+            if (isDevAuthenticated()) {
+                await updatePinRequestNotifications();
+            }
+        });
+        window.addEventListener('storage', async (e) => {
+            if (e.key === 'kataya_pin_requests' || e.key === 'kataya_businesses_v1') {
+                if (isDevAuthenticated()) {
+                    await updatePinRequestNotifications();
+                    await renderDeveloperList();
+                }
+            }
+        });
+
+        let _isAuthed = false;
+        function isDevAuthenticated() {
+            return _isAuthed;
+        }
+
+        function setDevAuthenticated(val) {
+            _isAuthed = val;
+        }
+
+        async function checkExistingDevAuth() {
+            if (isDevAuthenticated()) {
+                await showDevDashboard();
+            } else {
+                await showDevLogin();
+            }
+        }
+
+        async function showDevLogin() {
+            const loginEl = document.getElementById('devLoginContainer');
+            const dashEl = document.getElementById('devMainDashboard');
+            const logoutBtn = document.getElementById('btnDevLogout');
+            const btnPinNotif = document.getElementById('btnPinRequestNotification');
+            if (loginEl) loginEl.classList.remove('hidden');
+            if (dashEl) dashEl.classList.add('hidden');
+            if (logoutBtn) logoutBtn.classList.add('hidden');
+            if (btnPinNotif) btnPinNotif.classList.add('hidden');
+            const pinInput = document.getElementById('devPinInput');
+            if (pinInput) setTimeout(() => pinInput.focus(), 150);
+            const devPhone = (window.KatayaDB && typeof window.KatayaDB.getDeveloperPhone === 'function')
+                ? await window.KatayaDB.getDeveloperPhone()
+                : '6285856640045';
+            const forgotLink = document.getElementById('devForgotPinLink');
+            if (forgotLink) {
+                forgotLink.href = `https://wa.me/${devPhone}?text=${encodeURIComponent('Halo Creator, saya membutuhkan PIN baru untuk akses Portal Developer Kataya.')}`;
+            }
+        }
+
+        async function showDevDashboard() {
+            const loginEl = document.getElementById('devLoginContainer');
+            const dashEl = document.getElementById('devMainDashboard');
+            const logoutBtn = document.getElementById('btnDevLogout');
+            const btnPinNotif = document.getElementById('btnPinRequestNotification');
+            if (loginEl) loginEl.classList.add('hidden');
+            if (dashEl) dashEl.classList.remove('hidden');
+            if (logoutBtn) logoutBtn.classList.remove('hidden');
+            if (btnPinNotif) btnPinNotif.classList.remove('hidden');
+            await switchTab('tab-pending');
+            await renderPendingRequestsTop();
+            await renderDeveloperList();
+            await initStandeeGenerator();
+            await initBotSettings();
+            await updatePinRequestNotifications();
+            await checkActivationUrlParams();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        async function handleDevLogin(e) {
+            if (e) e.preventDefault();
+            const pinInput = document.getElementById('devPinInput');
+            const pin = pinInput ? pinInput.value.trim() : '';
+            const err = document.getElementById('devPinError');
+
+            // Cek proteksi anti brute-force
+            const lockoutKey = 'dev_portal_auth';
+            const lockStatus = window.KatayaDB && window.KatayaDB.LOGIN_SECURITY
+                ? window.KatayaDB.LOGIN_SECURITY.checkLockout(lockoutKey)
+                : { locked: false };
+
+            const devPhone = (window.KatayaDB && typeof window.KatayaDB.getDeveloperPhone === 'function')
+                ? await window.KatayaDB.getDeveloperPhone()
+                : '6285856640045';
+
+            if (lockStatus.locked) {
+                if (err) {
+                    err.textContent = `Akses portal terkunci. Anda telah 3 kali salah memasukkan sandi. Tunggu ${lockStatus.waitSeconds} detik. Mengarahkan ke WhatsApp...`;
+                    err.classList.remove('hidden');
+                    document.getElementById('devForgotPinSection').classList.remove('hidden');
+                }
+                setTimeout(() => {
+                    window.open(`https://wa.me/${devPhone}?text=${encodeURIComponent('Halo Creator, saya membutuhkan PIN baru untuk akses Portal Developer Kataya.')}`, '_blank');
+                }, 300);
+                return;
+            }
+
+            const isValid = (window.KatayaDB && typeof window.KatayaDB.verifyDeveloperPin === 'function')
+                ? window.KatayaDB.verifyDeveloperPin(pin)
+                : (pin === '2202');
+
+            if (isValid) {
+                if (window.KatayaDB && window.KatayaDB.LOGIN_SECURITY) {
+                    window.KatayaDB.LOGIN_SECURITY.clearAttempts(lockoutKey);
+                }
+                setDevAuthenticated(true);
+                if (err) err.classList.add('hidden');
+                document.getElementById('devForgotPinSection').classList.add('hidden');
+                await showDevDashboard();
+            } else {
+                let failMsg = 'Sandi developer salah! Akses ditolak.';
+                if (window.KatayaDB && window.KatayaDB.LOGIN_SECURITY) {
+                    const failRes = window.KatayaDB.LOGIN_SECURITY.recordFailedAttempt(lockoutKey);
+                    if (failRes.locked) {
+                        failMsg = 'Akses terkunci karena 3 kali salah memasukkan PIN. Mengarahkan otomatis ke WhatsApp...';
+                        document.getElementById('devForgotPinSection').classList.remove('hidden');
+                        setTimeout(() => {
+                            window.open(`https://wa.me/${devPhone}?text=${encodeURIComponent('Halo Creator, saya membutuhkan PIN baru untuk akses Portal Developer Kataya.')}`, '_blank');
+                        }, 300);
+                    } else {
+                        failMsg = `Sandi developer salah! Sisa percobaan: ${failRes.remainingAttempts}.`;
+                        document.getElementById('devForgotPinSection').classList.add('hidden');
+                    }
+                }
+                if (err) {
+                    err.textContent = failMsg;
+                    err.classList.remove('hidden');
+                }
+                if (pinInput) {
+                    pinInput.value = '';
+                    pinInput.focus();
+                }
+            }
+        }
+
+        async function devLogout() {
+            setDevAuthenticated(false);
+            await showDevLogin();
+        }
+
+        // 5. Cek URL params dan validasi 1x pakai token aktivasi
+        async function checkActivationUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const actBizId = urlParams.get('activate');
+            const actToken = urlParams.get('token');
+
+            if (actBizId && actToken) {
+                const biz = await window.KatayaDB.getBusinessById(actBizId);
+                if (biz && biz.activationToken === actToken) {
+                    targetBizToActivate = biz;
+
+                    // Cek apakah token sudah pernah digunakan (Single-use)
+                    if (biz.activationUsed) {
+                        const expiredCard = document.getElementById('activationExpiredCard');
+                        const usedTime = biz.activatedAt ? new Date(biz.activatedAt).toLocaleString('id-ID') : 'sebelumnya';
+                        document.getElementById('actExpiredMessage').textContent = 
+                            `Tautan aktivasi untuk "${biz.businessName}" sudah pernah digunakan pada ${usedTime}. Status bisnis saat ini sudah AKTIF. Setiap tautan hanya berlaku 1 kali pakai.`;
+                        expiredCard.classList.remove('hidden');
+                        return;
+                    }
+
+                    // Jika belum terpakai, tampilkan kartu aktivasi
+                    const card = document.getElementById('activationRequestCard');
+                    document.getElementById('actBizName').textContent = biz.businessName;
+                    
+                    const packageNames = {
+                        single: 'Single Outlet (Rp 50.000) + NFC',
+                        multi: 'Multi Cabang - Maks 3 Cabang (Rp 100.000) + NFC',
+                        franchise: 'Limit Franchise - Unlimited (Rp 500.000) + NFC'
+                    };
+                    document.getElementById('actPackageName').textContent = packageNames[biz.packageType] || biz.packageType;
+                    document.getElementById('actBizWa').textContent = '+' + biz.whatsapp;
+                    document.getElementById('actBizPlaceId').textContent = biz.placeId;
+
+                    card.classList.remove('hidden');
+                }
+            }
+        }
+
+        // Helper URL absolut untuk review & dashboard
+        function getFullUrl(relPath) {
+            if (window.location.protocol === 'file:') {
+                const basePath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+                return `${basePath}/${relPath}`;
+            }
+            const origin = window.location.origin;
+            const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+            return `${origin}${path}/${relPath}`;
+        }
+
+        // Susun Pesan WhatsApp Aktivasi Resmi dengan Link Review Langsung
+        function generateOwnerActivationMessage(biz) {
+            const reviewUrl = getFullUrl(`review.html?id=${biz.id}`);
+            const dashUrl = getFullUrl(`dashboard.html?id=${biz.id}`);
+
+            return (
+                `Halo *${biz.businessName}*,\n\n` +
+                `Selamat! Pembayaran & aktivasi sistem Kataya Smart Review Flow untuk bisnis Anda telah *DISETUJUI & AKTIF* secara resmi.\n\n` +
+                `Berikut adalah tautan (link) ulasan cerdas untuk pelanggan Anda:\n` +
+                `⭐ *Link Review Bisnis Anda:*\n` +
+                `${reviewUrl}\n\n` +
+                `📊 *Link Dashboard Pemilik:*\n` +
+                `${dashUrl}\n` +
+                `(Masuk menggunakan No. WhatsApp ini & PIN yang Anda buat saat mendaftar)\n\n` +
+                `💡 *Fitur Proteksi Rating Kataya:* \n` +
+                `&bull; Ulasan Bintang 4-5: Otomatis diarahkan ke Google Review publik bisnis Anda.\n` +
+                `&bull; Ulasan Bintang 1-3: Otomatis disaring masuk ke WhatsApp pribadi Anda.\n\n` +
+                `Link review di atas siap ditautkan ke Kartu Pintar NFC meja kasir, dicetak sebagai stiker QR code, atau dibagikan ke pelanggan.\n\n` +
+                `Salam sukses selalu,\n*Tim Pengembang Kataya*`
+            );
+        }
+
+        // Langsung kirim link review ke WhatsApp pemilik bisnis
+        function sendReviewLinkToOwner(biz) {
+            if (!biz) return;
+            const cleanPhone = String(biz.whatsapp || '').replace(/\D/g, '').replace(/^0/, '62');
+            const msgText = generateOwnerActivationMessage(biz);
+            const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msgText)}`;
+            
+            // Langsung buka WhatsApp
+            window.open(waUrl, '_blank');
+        }
+
+        let currentSuccessBiz = null;
+
+        function showActivationSuccessCard(biz) {
+            currentSuccessBiz = biz;
+            const card = document.getElementById('activationSuccessCard');
+            const nameEl = document.getElementById('succBizName');
+            const nameDesc = document.getElementById('succBizNameDesc');
+            const urlInput = document.getElementById('succReviewUrlInput');
+            const testBtn = document.getElementById('succTestReviewBtn');
+
+            if (nameEl) nameEl.textContent = biz.businessName;
+            if (nameDesc) nameDesc.textContent = biz.businessName;
+            const reviewUrl = getFullUrl(`review.html?id=${biz.id}`);
+            if (urlInput) urlInput.value = reviewUrl;
+            if (testBtn) testBtn.href = reviewUrl;
+
+            if (card) {
+                card.classList.remove('hidden');
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (window.lucide) lucide.createIcons();
+            }
+        }
+
+        function dismissSuccessCard() {
+            const card = document.getElementById('activationSuccessCard');
+            if (card) card.classList.add('hidden');
+        }
+
+        function copySuccReviewUrl() {
+            const urlInput = document.getElementById('succReviewUrlInput');
+            if (urlInput) {
+                navigator.clipboard.writeText(urlInput.value).then(() => {
+                    alert('Link review berhasil disalin ke clipboard!');
+                });
+            }
+        }
+
+        function dismissActivationCard() {
+            const card = document.getElementById('activationRequestCard');
+            if (card) card.classList.add('hidden');
+            targetBizToActivate = null;
+        }
+
+        async function confirmActivationNow() {
+            if (!targetBizToActivate) return;
+            const res = await window.KatayaDB.activateBusiness(targetBizToActivate.id, targetBizToActivate.activationToken, '2202');
+            if (res.success) {
+                dismissActivationCard();
+                showActivationSuccessCard(targetBizToActivate);
+                await renderPendingRequestsTop();
+                await renderDeveloperList();
+                // Developer tidak perlu kirim link ulasan melalui WhatsApp
+            } else {
+                alert(res.message);
+            }
+        }
+
+        async function handleDevPendingSearch() {
+            await renderPendingRequestsTop();
+        }
+
+        // Render Permintaan Aktivasi Masuk di Bagian Paling Atas
+        async function renderPendingRequestsTop() {
+            const container = document.getElementById('pendingRequestsTopSection');
+            if (!container) return;
+
+            const list = await window.KatayaDB.getAllBusinesses();
+            const searchInput = document.getElementById('devPendingSearchInput');
+            const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+            let pendingList = list.filter(b => b.status === 'pending');
+            if (query) {
+                pendingList = pendingList.filter(b => {
+                    const name = (b.businessName || '').toLowerCase();
+                    const wa = (b.whatsapp || '').toLowerCase();
+                    const pid = (b.placeId || '').toLowerCase();
+                    const pkg = (b.packageType || '').toLowerCase();
+                    const cat = (b.businessType || '').toLowerCase();
+                    return name.includes(query) || wa.includes(query) || pid.includes(query) || pkg.includes(query) || cat.includes(query);
+                });
+            }
+
+            if (pendingList.length === 0) {
+                const emptyMsg = query 
+                    ? `Tidak ada permohonan mitra yang cocok dengan pencarian "<strong>${escapeHtml(query)}</strong>".`
+                    : 'Semua mitra yang terdaftar saat ini sudah berstatus aktif dan terverifikasi.';
+                container.innerHTML = `
+                    <div class="bg-[#0B1C3F] border border-slate-800 rounded-3xl p-8 text-center text-slate-400 space-y-3 shadow-lg">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto">
+                            <i data-lucide="check-circle-2" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-lg font-black text-white">${query ? 'Pencarian Tidak Ditemukan' : 'Tidak Ada Mitra Menunggu Aktivasi'}</h3>
+                        <p class="text-xs text-slate-400 max-w-md mx-auto">${emptyMsg}</p>
+                    </div>
+                `;
+                container.classList.remove('hidden');
+                if (window.lucide) lucide.createIcons();
+                return;
+            }
+
+            container.classList.remove('hidden');
+
+            const packageNames = {
+                single: 'Single Outlet (Rp 50.000) + NFC',
+                multi: 'Multi Cabang - Maks 3 Gerai (Rp 100.000) + NFC',
+                franchise: 'Limit Franchise - Unlimited (Rp 500.000) + NFC'
+            };
+
+            let cardsHtml = `
+                <div class="bg-[#0B1C3F] border-2 border-[#E01A8A] rounded-3xl p-6 shadow-2xl space-y-4">
+                    <div class="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-slate-800">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-xl bg-[#E01A8A] text-white flex items-center justify-center font-black animate-bounce shadow-md">
+                                <i data-lucide="bell-ring" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-black text-white">Antrean Permintaan Aktivasi Baru</h3>
+                                <p class="text-xs text-pink-200">Ada ${pendingList.length} bisnis baru yang menunggu persetujuan aktivasi dari Developer</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-[#E01A8A] text-white text-xs font-black uppercase shadow">
+                            ${pendingList.length} Menunggu Persetujuan
+                        </span>
+                    </div>
+
+                    <div class="grid gap-4">
+            `;
+
+            pendingList.forEach(biz => {
+                const createdDate = biz.createdAt ? new Date(biz.createdAt).toLocaleString('id-ID', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : 'Baru saja';
+
+                const pName = packageNames[biz.packageType] || biz.packageType;
+                const cleanWa = String(biz.whatsapp || '').replace(/\D/g, '');
+                const waLink = cleanWa ? `https://wa.me/${cleanWa}` : '#';
+
+                cardsHtml += `
+                    <div class="bg-[#0A1931] border border-slate-700 hover:border-[#E01A8A] rounded-2xl p-5 transition-all shadow-lg flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center gap-2">
+                                <h4 class="text-lg font-black text-white">${escapeHtml(biz.businessName)}</h4>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-black bg-[#E01A8A]/20 text-[#E01A8A] border border-[#E01A8A]/40 uppercase">
+                                    ${escapeHtml(biz.packageType)}
+                                </span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-300">
+                                <span>Paket: <strong class="text-[#E01A8A]">${escapeHtml(pName)}</strong></span>
+                                <span>&bull;</span>
+                                <span>Kategori: <strong class="text-pink-300">${escapeHtml(biz.businessType || 'Kuliner (F&B)')}</strong></span>
+                                <span>&bull;</span>
+                                <span>WhatsApp Owner: <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="text-emerald-400 font-mono font-bold hover:underline">+${escapeHtml(biz.whatsapp)}</a></span>
+                                <span>&bull;</span>
+                                <span>Place ID: <code class="text-pink-300 font-mono">${escapeHtml(biz.placeId)}</code></span>
+                                <span>&bull;</span>
+                                <span class="text-slate-400">Daftar: ${createdDate}</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400">
+                                Cek bukti transfer pembayaran resmi atas nama <strong>Widha Vebri Mardiawan</strong>. Tekan tombol di samping untuk menyetujui aktivasi akun ulasan ini.
+                            </p>
+                        </div>
+
+                        <div class="shrink-0 flex items-center gap-2">
+                            <button onclick="approveBusinessActivation('${escapeHtml(biz.id)}')" 
+                                class="w-full lg:w-auto px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-teal-500 hover:to-emerald-500 text-white font-black text-xs sm:text-sm shadow-xl transition-all flex items-center justify-center gap-2 hover:scale-[1.02]">
+                                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                <span>Setujui Aktivasi</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cardsHtml += `
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = cardsHtml;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // Developer Setujui Aktivasi dari Antrean Paling Atas (Tanpa Kirim WA)
+        async function approveBusinessActivation(bizId) {
+            const biz = await window.KatayaDB.getBusinessById(bizId);
+            if (!biz) return;
+
+            // Aktifkan bisnis & kunci token
+            await window.KatayaDB.updateBusiness(bizId, { 
+                status: 'active', 
+                activationUsed: true, 
+                activatedAt: new Date().toISOString() 
+            });
+
+            // Tampilkan kartu sukses di layar developer
+            showActivationSuccessCard(biz);
+
+            // Perbarui tampilan antrean atas & daftar tabel
+            await renderPendingRequestsTop();
+            await renderDeveloperList();
+
+            // Developer tidak perlu kirim link ulasan melalui WhatsApp
+        }
+
+        async function handleDevBizSearch() {
+            await renderDeveloperList();
+        }
+
+        async function renderDeveloperList() {
+            const list = await window.KatayaDB.getAllBusinesses();
+            const tbody = document.getElementById('devBusinessTableBody');
+            tbody.innerHTML = '';
+
+            const searchInput = document.getElementById('devBizSearchInput');
+            const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+            let totalActive = 0;
+            let totalPending = 0;
+            let totalReviews = 0;
+            let totalExpired = 0;
+
+            const packageLabels = {
+                single: '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#0A1931] border border-slate-700 text-slate-300">Single 50rb + NFC</span>',
+                multi: '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-950/80 border border-pink-700 text-pink-300">Multi 100rb (3 Cabang) + NFC</span>',
+                franchise: '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-950/80 border border-purple-700 text-purple-300">Franchise 500rb + NFC</span>'
+            };
+
+            // Hitung total statistik dari seluruh data
+            list.forEach(biz => {
+                const reviews = biz.reviews || [];
+                totalReviews += reviews.length;
+                if (biz.status === 'pending') totalPending++;
+                else totalActive++;
+            });
+
+            // Filter data yang ditampilkan berdasarkan pencarian
+            let filteredList = list;
+            if (query) {
+                filteredList = list.filter(b => {
+                    const name = (b.businessName || '').toLowerCase();
+                    const wa = (b.whatsapp || '').toLowerCase();
+                    const pid = (b.placeId || '').toLowerCase();
+                    const pkg = (b.packageType || '').toLowerCase();
+                    const cat = (b.businessType || '').toLowerCase();
+                    const id = (b.id || '').toLowerCase();
+                    return name.includes(query) || wa.includes(query) || pid.includes(query) || pkg.includes(query) || cat.includes(query) || id.includes(query);
+                });
+            }
+
+            if (filteredList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-slate-400">
+                            Tidak ada data mitra yang cocok dengan pencarian "<strong>${escapeHtml(query)}</strong>".
+                        </td>
+                    </tr>
+                `;
+            }
+
+            filteredList.forEach(biz => {
+                const reviews = biz.reviews || [];
+                const isPending = biz.status === 'pending';
+                const googleReviews = reviews.filter(r => r.type === 'google').length;
+                const waComplaints = reviews.filter(r => r.type === 'whatsapp').length;
+                
+                let avgRating = 'Belum ada';
+                if (reviews.length > 0) {
+                    const sum = reviews.reduce((acc, r) => acc + r.stars, 0);
+                    avgRating = (sum / reviews.length).toFixed(1) + ' ★';
+                }
+
+                const cleanWa = String(biz.whatsapp || '').replace(/\D/g, '');
+                const cleanPlaceId = escapeHtml(biz.placeId || '');
+                const googleLink = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(biz.placeId || '')}`;
+                const waLink = cleanWa ? `https://wa.me/${cleanWa}` : '#';
+                const reviewUrl = `review.html?id=${encodeURIComponent(biz.id)}`;
+
+                const statusBadge = isPending
+                    ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse">Menunggu Aktivasi</span>`
+                    : `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">✔ Aktif</span>`;
+
+                // Analisis Retensi & Terakhir Diakses
+                const info = (window.KatayaDB && typeof window.KatayaDB.getAccountInactivityInfo === 'function') 
+                    ? window.KatayaDB.getAccountInactivityInfo(biz) 
+                    : {
+                        formattedDate: biz.lastAccessedAt ? new Date(biz.lastAccessedAt).toLocaleDateString('id-ID') : '-',
+                        daysInactive: 0,
+                        daysRemaining: 365,
+                        isExpired: false,
+                        isWarning: false
+                    };
+
+                if (info.isExpired) {
+                    totalExpired++;
+                }
+
+                let retentionBadge = '';
+                if (info.isExpired) {
+                    retentionBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 w-max animate-pulse">
+                        <i data-lucide="alert-circle" class="w-3 h-3"></i> Tidak Aktif > 1 Thn (${info.daysInactive} hr)
+                    </span>`;
+                } else if (info.isWarning) {
+                    retentionBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1 w-max">
+                        <i data-lucide="clock" class="w-3 h-3"></i> Sisa ${info.daysRemaining} hari
+                    </span>`;
+                } else {
+                    retentionBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 flex items-center gap-1 w-max">
+                        <i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Aktif (Sisa ${info.daysRemaining} hr)
+                    </span>`;
+                }
+
+                // Pesan WhatsApp konfirmasi ke owner untuk retensi 1 tahun
+                const waConfirmMsg = encodeURIComponent(
+                    `Halo Pemilik *${biz.businessName}*,\n\n` +
+                    `Sistem Kataya Smart Review mendeteksi bahwa akun bisnis Anda tidak memiliki aktivitas akses atau ulasan baru selama ${info.daysInactive} hari (melewati batas kebijakan 1 tahun/365 hari).\n\n` +
+                    `Sesuai kebijakan pengelolaan database Kataya, akun yang tidak memiliki aktivitas selama 1 tahun dijadwalkan untuk dihapus secara otomatis.\n\n` +
+                    `Jika Anda masih ingin mempertahankan sistem proteksi rating Google Bisnis ini, silakan konfirmasi atau buka kembali dashboard bisnis Anda.\n\n` +
+                    `Terima kasih.\n- Tim Pengembang Kataya`
+                );
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-[#0A1931]/60 transition-colors';
+                tr.innerHTML = `
+                    <td class="p-4">
+                        <div class="font-bold text-white text-sm">${escapeHtml(biz.businessName)}</div>
+                        <div class="mt-1 flex items-center flex-wrap gap-1.5">
+                            ${packageLabels[biz.packageType] || escapeHtml(biz.packageType)}
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-950/60 border border-pink-700/60 text-pink-300">${escapeHtml(biz.businessType || 'Kuliner (F&B)')}</span>
+                            <span class="text-[11px] text-slate-500 font-mono">ID: ${escapeHtml(biz.id)}</span>
+                        </div>
+                    </td>
+                    <td class="p-4">${statusBadge}</td>
+                    <td class="p-4">
+                        <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="text-emerald-400 font-mono font-bold hover:underline">
+                            +${escapeHtml(biz.whatsapp)}
+                        </a>
+                    </td>
+                    <td class="p-4">
+                        <div class="max-w-xs truncate font-mono text-[11px] text-slate-400" title="${escapeHtml(googleLink)}">
+                            PlaceID: <span class="text-pink-300 font-bold">${cleanPlaceId}</span>
+                        </div>
+                        <a href="${googleLink}" target="_blank" rel="noopener noreferrer" class="text-[#E01A8A] text-[11px] hover:underline inline-flex items-center gap-1 mt-0.5">
+                            Buka Link Google &rarr;
+                        </a>
+                    </td>
+                    <td class="p-4">
+                        <div class="flex items-center gap-1.5 font-bold text-amber-400">
+                            <span>${avgRating}</span>
+                            <span class="text-slate-500 font-normal">(${reviews.length} ulasan)</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 mt-1">
+                            <span class="text-emerald-400">✔ ${googleReviews} Google</span> &bull; 
+                            <span class="text-amber-400">🛡️ ${waComplaints} WA Owner</span>
+                        </div>
+                    </td>
+                    <td class="p-4">
+                        <div class="text-white font-medium text-xs">${escapeHtml(info.formattedDate)}</div>
+                        <div class="text-[11px] text-slate-400 mt-0.5">${info.daysInactive === 0 ? 'Hari ini' : info.daysInactive + ' hari lalu'}</div>
+                        <div class="mt-1.5">${retentionBadge}</div>
+                    </td>
+                    <td class="p-4 text-center">
+                        <div class="flex flex-wrap items-center justify-center gap-1.5">
+                            ${isPending ? `
+                                <button onclick="quickActivateBiz('${escapeHtml(biz.id)}')" class="px-2.5 py-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-teal-600 hover:to-emerald-600 text-white font-bold rounded text-[11px] inline-flex items-center gap-1 shadow-md">
+                                    <i data-lucide="check" class="w-3 h-3"></i> Setujui Aktivasi
+                                </button>
+                            ` : ''}
+                            <a href="${reviewUrl}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 bg-[#0A1931] hover:bg-slate-800 border border-slate-700 text-white font-bold rounded text-[11px]">
+                                Rating
+                            </a>
+                            <a href="dashboard.html?id=${encodeURIComponent(biz.id)}" class="px-2.5 py-1 bg-gradient-to-r from-[#BE123C] to-[#E01A8A] hover:from-[#E01A8A] hover:to-[#BE123C] text-white font-bold rounded text-[11px] shadow">
+                                Dashboard
+                            </a>
+                            <a href="https://wa.me/${cleanWa}?text=${waConfirmMsg}" target="_blank" rel="noopener noreferrer" class="px-2 py-1 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded text-[11px] inline-flex items-center gap-1" title="Kirim Konfirmasi WA Retensi Akun">
+                                <i data-lucide="message-circle" class="w-3 h-3"></i> Konfirmasi WA
+                            </a>
+                            <button onclick="handleDeleteSingleBiz('${escapeHtml(biz.id)}')" class="px-2 py-1 bg-rose-800 hover:bg-rose-700 text-white font-bold rounded text-[11px] inline-flex items-center gap-1" title="Hapus Akun Ini">
+                                <i data-lucide="trash-2" class="w-3 h-3"></i> Hapus
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+            });
+
+            document.getElementById('devStatTotalBiz').textContent = list.length;
+            document.getElementById('devStatActiveBiz').textContent = totalActive;
+            document.getElementById('devStatPendingBiz').textContent = totalPending;
+            document.getElementById('devStatTotalReviews').textContent = totalReviews;
+            
+            const expEl = document.getElementById('devStatExpiredBiz');
+            if (expEl) expEl.textContent = totalExpired;
+
+            // Tampilkan atau sembunyikan banner retensi
+            const retAlertCard = document.getElementById('retentionAlertCard');
+            if (retAlertCard) {
+                if (totalExpired > 0) {
+                    retAlertCard.classList.remove('hidden');
+                    document.getElementById('retentionAlertTitle').textContent = 
+                        `Ditemukan ${totalExpired} Akun Tidak Aktif Selama Lebih Dari 1 Tahun (365 Hari)`;
+                } else {
+                    retAlertCard.classList.add('hidden');
+                }
+            }
+
+            lucide.createIcons();
+        }
+
+        async function handleDeleteSingleBiz(bizId) {
+            const biz = await window.KatayaDB.getBusinessById(bizId);
+            const bizName = biz ? biz.businessName : 'Bisnis ini';
+            const confirmed = confirm(`PERINGATAN PENGHAPUSAN AKUN:\n\nApakah Anda yakin ingin menghapus akun "${bizName}" secara permanen?\n\nPastikan Anda telah mengirimkan pesan konfirmasi ke WhatsApp pemilik akun sebelum tindakan ini dilakukan.`);
+            if (!confirmed) return;
+
+            await window.KatayaDB.deleteBusiness(bizId);
+            alert(`Akun "${bizName}" telah berhasil dihapus dari database.`);
+            await renderDeveloperList();
+        }
+
+        async function handleAutoCleanupExpired() {
+            const list = await window.KatayaDB.getAllBusinesses();
+            const expiredList = list.filter(b => {
+                const info = window.KatayaDB.getAccountInactivityInfo(b);
+                return info.isExpired;
+            });
+
+            if (expiredList.length === 0) {
+                alert('Tidak ada akun yang melewati batas 1 tahun tidak aktif.');
+                return;
+            }
+
+            const names = expiredList.map(b => `⚠️ ${b.businessName} (Tidak aktif: ${window.KatayaDB.getAccountInactivityInfo(b).daysInactive} hari)`).join('\n');
+            const confirmed = confirm(`KONFIRMASI PEMBERSIHAN OTOMATIS:\n\nSistem menemukan ${expiredList.length} akun yang tidak memiliki aktivitas selama lebih dari 1 tahun:\n\n${names}\n\nApakah Anda yakin ingin menghapus seluruh akun kadaluarsa ini secara otomatis?`);
+            if (!confirmed) return;
+
+            const deleted = await window.KatayaDB.autoCleanupExpiredAccounts();
+            alert(`Pembersihan berhasil! Sebanyak ${deleted.length} akun kadaluarsa telah dihapus dari sistem.`);
+            await renderDeveloperList();
+        }
+
+        async function quickActivateBiz(bizId) {
+            const biz = await window.KatayaDB.getBusinessById(bizId);
+            if (!biz) return;
+            await window.KatayaDB.updateBusiness(bizId, { status: 'active', activationUsed: true, activatedAt: new Date().toISOString() });
+            
+            showActivationSuccessCard(biz);
+            await renderPendingRequestsTop();
+            await renderDeveloperList();
+        }
+
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // ================= LOGIKA GENERATOR STANDEE MEJA DEVELOPER =================
+        let activeStandeeQrStyling = null;
+
+        function setDevStandeePreset(w, h, btnEl) {
+            const widthInput = document.getElementById('inputStandeeWidthCm');
+            const heightInput = document.getElementById('inputStandeeHeightCm');
+            if (widthInput) widthInput.value = w;
+            if (heightInput) heightInput.value = h;
+            onDevStandeeSizeChange();
+        }
+
+        function onDevStandeeSizeChange() {
+            const widthInput = document.getElementById('inputStandeeWidthCm');
+            const heightInput = document.getElementById('inputStandeeHeightCm');
+            const w = parseFloat(widthInput ? widthInput.value : 10) || 10;
+            const h = parseFloat(heightInput ? heightInput.value : 15) || 15;
+            const isVert = (w / h) < 0.90;
+
+            const container = document.getElementById('devStandeeMockupContainer');
+            if (container) {
+                container.style.aspectRatio = `${w} / ${h}`;
+            }
+
+            const badge = document.getElementById('devStandeeSizeBadge');
+            if (badge) badge.textContent = `${w} × ${h} cm`;
+
+            const info = document.getElementById('devStandeeDimensionInfo');
+            if (info) info.textContent = `Ukuran: ${w} × ${h} cm (${isVert ? 'NFC di Bawah' : 'NFC di Kiri'})`;
+
+            const dlLabel = document.getElementById('btnDownloadDevStandeeLabel');
+            if (dlLabel) dlLabel.textContent = `Unduh Kartu Barcode (${w}×${h} cm HD)`;
+
+            refreshStandeeCanvasPreview();
+        }
+
+        function onDevBatchSizeChange() {
+            const widthInput = document.getElementById('inputBatchWidthCm');
+            const heightInput = document.getElementById('inputBatchHeightCm');
+            const w = parseFloat(widthInput ? widthInput.value : 10) || 10;
+            const h = parseFloat(heightInput ? heightInput.value : 15) || 15;
+
+            const badge = document.getElementById('devBatchSizeBadge');
+            if (badge) badge.textContent = `${w} × ${h} cm`;
+        }
+
+        async function initStandeeGenerator() {
+            // Isi dropdown bisnis mitra terdaftar
+            const allBiz = await window.KatayaDB.getAllBusinesses();
+            const selectBiz = document.getElementById('selectStandeeBiz');
+            if (selectBiz) {
+                selectBiz.innerHTML = allBiz.map(b => 
+                    `<option value="${escapeHtml(b.id)}">${escapeHtml(b.businessName)} (${b.status === 'active' ? '✔ Aktif' : '⏳ Pending'})</option>`
+                ).join('');
+            }
+
+            // Kode standee awal acak
+            await randomizeStandeeCode();
+        }
+
+        async function randomizeStandeeCode() {
+            const codeInput = document.getElementById('inputStandeeCode');
+            if (codeInput) {
+                codeInput.value = window.KatayaDB.generateStandeeCode();
+                await updateStandeeFields();
+                await refreshStandeeCanvasPreview();
+            }
+        }
+
+        async function handleStandeeModeChange() {
+            const mode = document.getElementById('selectStandeeMode').value;
+            const wrapperBiz = document.getElementById('wrapperSelectBiz');
+            if (mode === 'registered') {
+                wrapperBiz.classList.remove('hidden');
+            } else {
+                wrapperBiz.classList.add('hidden');
+            }
+            await updateStandeeFields();
+            await refreshStandeeCanvasPreview();
+        }
+
+        async function handleSelectBizChange() {
+            await updateStandeeFields();
+            await refreshStandeeCanvasPreview();
+        }
+
+        async function updateStandeeFields() {
+            const mode = document.getElementById('selectStandeeMode').value;
+            const code = (document.getElementById('inputStandeeCode').value || 'STAND-DEMO').toUpperCase().trim();
+            const titleInput = document.getElementById('inputStandeeTitle');
+            const subtitleInput = document.getElementById('inputStandeeSubtitle');
+            const targetUrlInput = document.getElementById('inputStandeeTargetUrl');
+            const testBtn = document.getElementById('btnTestStandeeUrl');
+
+            // Susun URL pintar connect.html
+            const connectUrl = getFullUrl(`connect.html?standee=${encodeURIComponent(code)}`);
+            if (targetUrlInput) targetUrlInput.value = connectUrl;
+            if (testBtn) testBtn.href = connectUrl;
+
+            if (mode === 'registered') {
+                const bizId = document.getElementById('selectStandeeBiz').value;
+                const biz = await window.KatayaDB.getBusinessById(bizId);
+                if (biz) {
+                    if (titleInput) titleInput.value = biz.businessName;
+                    if (subtitleInput) subtitleInput.value = 'Scan untuk memberikan ulasan Google terbaik Anda';
+                }
+            } else {
+                if (titleInput && (!titleInput.value || titleInput.value === 'CAFE KENANGAN' || titleInput.value === 'RESTORAN PADANG SEDAP')) {
+                    titleInput.value = 'STANDEE AKRILIK MEJA TOKO';
+                }
+                if (subtitleInput) subtitleInput.value = 'Scan untuk registrasi cepat & mengaktifkan ulasan meja ini';
+            }
+        }
+
+        async function refreshStandeeCanvasPreview() {
+            const canvas = document.getElementById('standeePreviewCanvas');
+            const loading = document.getElementById('standeeCanvasLoading');
+            if (!canvas) return;
+
+            if (loading) loading.classList.remove('hidden');
+
+            const mode = document.getElementById('selectStandeeMode').value;
+            const isRegistered = (mode === 'registered');
+            const code = (document.getElementById('inputStandeeCode').value || 'STAND-DEMO').toUpperCase().trim();
+            const title = document.getElementById('inputStandeeTitle').value.trim() || (isRegistered ? 'BERIKAN ULASAN ANDA' : 'BARCODE PENDAFTARAN MITRA');
+            const subtitle = document.getElementById('inputStandeeSubtitle').value.trim();
+            let targetUrl = document.getElementById('inputStandeeTargetUrl')?.value;
+            if (!targetUrl) {
+                await updateStandeeFields();
+                targetUrl = document.getElementById('inputStandeeTargetUrl')?.value || getFullUrl(`connect.html?standee=${encodeURIComponent(code)}`);
+            }
+            const widthCm = parseFloat(document.getElementById('inputStandeeWidthCm')?.value) || 10;
+            const heightCm = parseFloat(document.getElementById('inputStandeeHeightCm')?.value) || 15;
+            const isVert = (widthCm / heightCm) < 0.90;
+
+            const container = document.getElementById('devStandeeMockupContainer');
+            if (container) {
+                container.style.aspectRatio = `${widthCm} / ${heightCm}`;
+            }
+            const info = document.getElementById('devStandeeDimensionInfo');
+            if (info) info.textContent = `Ukuran: ${widthCm} × ${heightCm} cm (${isVert ? 'NFC di Bawah' : 'NFC di Kiri'})`;
+
+            // Simpan pendaftaran standee ke registry
+            if (isRegistered) {
+                const bizId = document.getElementById('selectStandeeBiz').value;
+                await window.KatayaDB.linkStandeeToBusiness(code, bizId);
+            } else {
+                const existing = await window.KatayaDB.getStandee(code);
+                if (!existing) {
+                    await window.KatayaDB.createStandee(code, title);
+                }
+            }
+
+            try {
+                // Generate QR Code sebagai data URL menggunakan qr-code-styling
+                let qrDataUrl = '';
+                if (window.QRCodeStyling) {
+                    const qr = new QRCodeStyling({
+                        width: 750,
+                        height: 750,
+                        type: 'canvas',
+                        data: targetUrl,
+                        dotsOptions: {
+                            color: '#BE123C',
+                            type: 'rounded'
+                        },
+                        cornersSquareOptions: {
+                            color: '#0A1931',
+                            type: 'extra-rounded'
+                        },
+                        cornersDotOptions: {
+                            color: '#E01A8A',
+                            type: 'dot'
+                        },
+                        backgroundOptions: {
+                            color: '#FFFFFF'
+                        },
+                        imageOptions: {
+                            crossOrigin: 'anonymous',
+                            margin: 6
+                        }
+                    });
+                    const rawBlob = await qr.getRawData('png');
+                    if (rawBlob) {
+                        qrDataUrl = await new Promise(resolve => {
+                            const reader = new FileReader();
+                            reader.onloadend = () => resolve(reader.result);
+                            reader.readAsDataURL(rawBlob);
+                        });
+                    }
+                }
+
+                // Render ke canvas standee
+                if (window.KatayaStandee) {
+                    await window.KatayaStandee.renderStandeeToCanvas(canvas, {
+                        standeeCode: code,
+                        title: title,
+                        subtitle: subtitle,
+                        isRegistered: isRegistered,
+                        targetUrl: targetUrl,
+                        qrDataUrl: qrDataUrl,
+                        widthCm: widthCm,
+                        heightCm: heightCm
+                    });
+                }
+            } catch (err) {
+                console.error('Error saat render standee canvas:', err);
+            } finally {
+                if (loading) loading.classList.add('hidden');
+                if (window.lucide) lucide.createIcons();
+            }
+        }
+
+        function downloadCurrentStandeePng() {
+            const canvas = document.getElementById('standeePreviewCanvas');
+            const code = (document.getElementById('inputStandeeCode').value || 'STAND').toUpperCase().trim();
+            const widthCm = parseFloat(document.getElementById('inputStandeeWidthCm')?.value) || 10;
+            const heightCm = parseFloat(document.getElementById('inputStandeeHeightCm')?.value) || 15;
+            if (window.KatayaStandee && canvas) {
+                window.KatayaStandee.downloadStandeeAsPng(canvas, `Standee-Meja-${code}-${widthCm}x${heightCm}cm.png`);
+            }
+        }
+
+        function copyStandeeTargetUrl() {
+            const input = document.getElementById('inputStandeeTargetUrl');
+            if (input) {
+                navigator.clipboard.writeText(input.value).then(() => {
+                    alert('Tautan Barcode Pintar berhasil disalin ke clipboard!\n\n' + input.value);
+                });
+            }
+        }
+
+        // ================= LOGIKA CETAK MASSAL (BATCH) STANDEE =================
+        let currentBatchList = [];
+
+        async function switchStandeeSubTab(subTab) {
+            const singleSec = document.getElementById('sectionStandeeSingle');
+            const batchSec = document.getElementById('sectionStandeeBatch');
+            const btnSingle = document.getElementById('btnSubStandeeSingle');
+            const btnBatch = document.getElementById('btnSubStandeeBatch');
+
+            if (subTab === 'batch') {
+                if (singleSec) singleSec.classList.add('hidden');
+                if (batchSec) batchSec.classList.remove('hidden');
+                if (btnSingle) {
+                    btnSingle.className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center gap-1.5';
+                }
+                if (btnBatch) {
+                    btnBatch.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-[#BE123C] to-[#E01A8A] text-white shadow flex items-center gap-1.5';
+                }
+                await initBatchStandeeForm();
+            } else {
+                if (singleSec) singleSec.classList.remove('hidden');
+                if (batchSec) batchSec.classList.add('hidden');
+                if (btnSingle) {
+                    btnSingle.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-[#BE123C] to-[#E01A8A] text-white shadow flex items-center gap-1.5';
+                }
+                if (btnBatch) {
+                    btnBatch.className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center gap-1.5';
+                }
+                setTimeout(refreshStandeeCanvasPreview, 50);
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        async function initBatchStandeeForm() {
+            const allBiz = await window.KatayaDB.getAllBusinesses();
+            const selectBiz = document.getElementById('selectBatchBiz');
+            if (selectBiz) {
+                selectBiz.innerHTML = allBiz.map(b => 
+                    `<option value="${escapeHtml(b.id)}">${escapeHtml(b.businessName)} (${b.status === 'active' ? '✔ Aktif' : '⏳ Pending'})</option>`
+                ).join('');
+            }
+        }
+
+        function handleBatchModeChange() {
+            const mode = document.getElementById('selectBatchMode').value;
+            const wrapper = document.getElementById('wrapperBatchSelectBiz');
+            if (wrapper) {
+                if (mode === 'registered') {
+                    wrapper.classList.remove('hidden');
+                } else {
+                    wrapper.classList.add('hidden');
+                }
+            }
+        }
+
+        async function handleGenerateBatchStandees() {
+            const countInput = document.getElementById('inputBatchCount');
+            const count = Math.max(1, Math.min(parseInt(countInput ? countInput.value : 6) || 6, 50));
+            const mode = document.getElementById('selectBatchMode').value;
+            const prefix = (document.getElementById('inputBatchPrefix').value || 'Standee Meja').trim();
+            const bizId = (mode === 'registered') ? document.getElementById('selectBatchBiz').value : null;
+
+            const grid = document.getElementById('batchStandeeGrid');
+            if (grid) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-300 text-xs flex flex-col items-center justify-center gap-3">
+                        <i data-lucide="loader-2" class="w-8 h-8 text-[#E01A8A] animate-spin"></i>
+                        <span class="font-bold">Sedang membuat ${count} kartu barcode unik...</span>
+                    </div>
+                `;
+                if (window.lucide) lucide.createIcons();
+            }
+
+            // Generate standee data di database
+            const createdStandees = await window.KatayaDB.generateBatchStandees(count, bizId, prefix);
+            currentBatchList = createdStandees;
+
+            await renderBatchStandeesGrid(createdStandees, mode, bizId);
+        }
+
+        async function renderBatchStandeesGrid(standees, mode, bizId) {
+            const grid = document.getElementById('batchStandeeGrid');
+            const titleHeader = document.getElementById('batchTitleHeader');
+            const subHeader = document.getElementById('batchSubHeader');
+            if (!grid) return;
+
+            if (titleHeader) titleHeader.textContent = `Batch Berhasil: ${standees.length} Barcode Standee Baru`;
+            if (subHeader) subHeader.textContent = `Setiap kartu memiliki kode barcode unik berbeda dan siap dicetak pada akrilik meja.`;
+
+            grid.innerHTML = '';
+
+            let bizName = '';
+            if (mode === 'registered' && bizId) {
+                const b = await window.KatayaDB.getBusinessById(bizId);
+                if (b) bizName = b.businessName;
+            }
+
+            for (let i = 0; i < standees.length; i++) {
+                const item = standees[i];
+                const connectUrl = getFullUrl(`connect.html?standee=${encodeURIComponent(item.code)}`);
+                const itemTitle = bizName || item.label || `Standee #${item.code.replace('STAND-', '')}`;
+
+                const card = document.createElement('div');
+                card.className = 'p-3.5 rounded-2xl bg-[#0B1C3F] border border-slate-700 shadow flex flex-col justify-between space-y-3';
+                
+                const canvasId = `batchCanvas_${item.code.replace(/\W/g, '_')}`;
+                
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-black bg-pink-950 border border-pink-700 text-[#E01A8A] font-mono">
+                            ${escapeHtml(item.code)}
+                        </span>
+                        <span class="text-[10px] text-slate-400 font-bold">${i + 1} dari ${standees.length}</span>
+                    </div>
+                    <div class="w-full aspect-[3/4] max-w-[200px] mx-auto rounded-xl overflow-hidden shadow-inner border border-slate-700 bg-slate-900 relative flex items-center justify-center">
+                        <canvas id="${canvasId}" class="w-full h-full object-contain"></canvas>
+                    </div>
+                    <div class="text-center space-y-1">
+                        <div class="text-xs font-bold text-white truncate">${escapeHtml(itemTitle)}</div>
+                        <div class="text-[10px] font-mono text-pink-300 truncate select-all" title="${connectUrl}">${connectUrl}</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800">
+                        <button type="button" onclick="downloadBatchSingleCanvas('${canvasId}', '${item.code}')" 
+                            class="py-1.5 px-2 bg-gradient-to-r from-[#BE123C] to-[#E01A8A] text-white rounded-lg text-[10px] font-bold flex items-center justify-center gap-1">
+                            <i data-lucide="download" class="w-3 h-3"></i> Unduh
+                        </button>
+                        <a href="${connectUrl}" target="_blank" 
+                            class="py-1.5 px-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1">
+                            <i data-lucide="external-link" class="w-3 h-3"></i> Uji Link
+                        </a>
+                    </div>
+                `;
+                grid.appendChild(card);
+
+                // Render Canvas untuk kartu ini
+                const batchWidthCm = parseFloat(document.getElementById('inputBatchWidthCm')?.value) || 10;
+                const batchHeightCm = parseFloat(document.getElementById('inputBatchHeightCm')?.value) || 15;
+
+                setTimeout(async () => {
+                    const canvasEl = document.getElementById(canvasId);
+                    if (canvasEl && window.QRCodeStyling && window.KatayaStandee) {
+                        try {
+                            const qr = new QRCodeStyling({
+                                width: 750,
+                                height: 750,
+                                type: 'canvas',
+                                data: connectUrl,
+                                dotsOptions: { color: '#BE123C', type: 'rounded' },
+                                cornersSquareOptions: { color: '#0A1931', type: 'extra-rounded' },
+                                cornersDotOptions: { color: '#E01A8A', type: 'dot' },
+                                backgroundOptions: { color: '#FFFFFF' }
+                            });
+                            const rawBlob = await qr.getRawData('png');
+                            let qrDataUrl = '';
+                            if (rawBlob) {
+                                qrDataUrl = await new Promise(res => {
+                                    const r = new FileReader();
+                                    r.onloadend = () => res(r.result);
+                                    r.readAsDataURL(rawBlob);
+                                });
+                            }
+                            await window.KatayaStandee.renderStandeeToCanvas(canvasEl, {
+                                standeeCode: item.code,
+                                title: itemTitle,
+                                subtitle: mode === 'registered' ? 'Scan untuk ulasan Google terbaik' : 'Scan untuk pendaftaran ulasan',
+                                isRegistered: mode === 'registered',
+                                targetUrl: connectUrl,
+                                qrDataUrl: qrDataUrl,
+                                widthCm: batchWidthCm,
+                                heightCm: batchHeightCm
+                            });
+                        } catch(e) {
+                            console.error('Batch canvas render error:', e);
+                        }
+                    }
+                }, 60 * i);
+            }
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function downloadBatchSingleCanvas(canvasId, code) {
+            const canvas = document.getElementById(canvasId);
+            const batchWidthCm = parseFloat(document.getElementById('inputBatchWidthCm')?.value) || 10;
+            const batchHeightCm = parseFloat(document.getElementById('inputBatchHeightCm')?.value) || 15;
+            if (canvas && window.KatayaStandee) {
+                window.KatayaStandee.downloadStandeeAsPng(canvas, `Standee-Meja-${code}-${batchWidthCm}x${batchHeightCm}cm.png`);
+            }
+        }
+
+        function printBatchSheet() {
+            if (!currentBatchList || currentBatchList.length === 0) {
+                alert('Belum ada standee dalam batch saat ini. Silakan buat batch terlebih dahulu.');
+                return;
+            }
+
+            const printContainer = document.getElementById('printSheetContainer');
+            if (!printContainer) return;
+
+            const batchWidthCm = parseFloat(document.getElementById('inputBatchWidthCm')?.value) || 10;
+            const batchHeightCm = parseFloat(document.getElementById('inputBatchHeightCm')?.value) || 15;
+
+            printContainer.innerHTML = '';
+
+            currentBatchList.forEach((item, idx) => {
+                const canvasId = `batchCanvas_${item.code.replace(/\W/g, '_')}`;
+                const sourceCanvas = document.getElementById(canvasId);
+                
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'print-card-item border border-slate-300 p-4 rounded-xl text-center flex flex-col items-center justify-center bg-white';
+                cardDiv.style.pageBreakInside = 'avoid';
+                cardDiv.style.breakInside = 'avoid';
+                cardDiv.style.marginBottom = '20px';
+                cardDiv.style.width = batchWidthCm + 'cm';
+                cardDiv.style.minHeight = batchHeightCm + 'cm';
+                cardDiv.style.margin = '10px auto';
+
+                if (sourceCanvas) {
+                    const img = document.createElement('img');
+                    img.src = sourceCanvas.toDataURL('image/png');
+                    img.style.width = batchWidthCm + 'cm';
+                    img.style.height = batchHeightCm + 'cm';
+                    img.style.objectFit = 'contain';
+                    cardDiv.appendChild(img);
+                }
+
+                const caption = document.createElement('div');
+                caption.className = 'mt-2 text-xs font-mono font-bold text-slate-800';
+                caption.textContent = `Standee Akrilik (${batchWidthCm}×${batchHeightCm} cm) #${idx + 1} - Kode: ${item.code}`;
+                cardDiv.appendChild(caption);
+
+                printContainer.appendChild(cardDiv);
+            });
+
+            window.print();
+        }
+
+        async function downloadAllBatchStandeesZip() {
+            if (!currentBatchList || currentBatchList.length === 0) {
+                alert('Belum ada standee dalam batch saat ini. Silakan klik tombol "Generate Batch Barcode Baru" terlebih dahulu.');
+                return;
+            }
+
+            const batchWidthCm = parseFloat(document.getElementById('inputBatchWidthCm')?.value) || 10;
+            const batchHeightCm = parseFloat(document.getElementById('inputBatchHeightCm')?.value) || 15;
+            const labelEl = document.getElementById('labelBatchDownloadZip');
+            const origText = labelEl ? labelEl.textContent : '';
+
+            const items = [];
+            currentBatchList.forEach((item, idx) => {
+                const canvasId = `batchCanvas_${item.code.replace(/\W/g, '_')}`;
+                const canvas = document.getElementById(canvasId);
+                if (canvas) {
+                    items.push({
+                        filename: `Standee_Meja_${item.code}_${batchWidthCm}x${batchHeightCm}cm.png`,
+                        canvas: canvas,
+                        dataUrl: canvas.toDataURL('image/png')
+                    });
+                }
+            });
+
+            if (items.length === 0) {
+                alert('Gambar kartu standee sedang diproses. Silakan tunggu beberapa detik.');
+                return;
+            }
+
+            if (labelEl) labelEl.textContent = `Menyiapkan ZIP (${items.length} file .PNG)...`;
+
+            await window.KatayaStandee.downloadMultiplePngsAsZip(
+                items,
+                `Batch_Barcode_Standee_${items.length}_Kartu_${batchWidthCm}x${batchHeightCm}cm.zip`,
+                (pct, statusText) => {
+                    if (labelEl) labelEl.textContent = `${statusText}`;
+                }
+            );
+
+            setTimeout(() => {
+                if (labelEl) labelEl.textContent = origText;
+                if (window.lucide) lucide.createIcons();
+            }, 3000);
+        }
+
+        async function downloadAllBatchStandeesDirect() {
+            if (!currentBatchList || currentBatchList.length === 0) {
+                alert('Belum ada standee dalam batch saat ini. Silakan klik tombol "Generate Batch Barcode Baru" terlebih dahulu.');
+                return;
+            }
+
+            const batchWidthCm = parseFloat(document.getElementById('inputBatchWidthCm')?.value) || 10;
+            const batchHeightCm = parseFloat(document.getElementById('inputBatchHeightCm')?.value) || 15;
+
+            const items = [];
+            currentBatchList.forEach((item, idx) => {
+                const canvasId = `batchCanvas_${item.code.replace(/\W/g, '_')}`;
+                const canvas = document.getElementById(canvasId);
+                if (canvas) {
+                    items.push({
+                        filename: `Standee_Meja_${item.code}_${batchWidthCm}x${batchHeightCm}cm.png`,
+                        canvas: canvas,
+                        dataUrl: canvas.toDataURL('image/png')
+                    });
+                }
+            });
+
+            if (items.length === 0) {
+                alert('Gambar kartu standee sedang diproses. Silakan tunggu beberapa detik.');
+                return;
+            }
+
+            await window.KatayaStandee.downloadMultiplePngsDirect(items);
+        }
+
+        async function downloadAllMitraStandeesZip() {
+            const allBiz = (await window.KatayaDB.getAllBusinesses()).filter(b => b.status === 'active');
+            if (allBiz.length === 0) {
+                alert('Belum ada bisnis mitra dengan status aktif.');
+                return;
+            }
+
+            const labelEl = document.getElementById('labelAllMitraZip');
+            const origText = labelEl ? labelEl.textContent : '';
+            if (labelEl) labelEl.textContent = `Memproses ${allBiz.length} Barcode Mitra...`;
+
+            const items = [];
+            for (let i = 0; i < allBiz.length; i++) {
+                const biz = allBiz[i];
+                const code = biz.standeeCode || `STAND-${biz.id.replace('biz_', '').substring(0, 6)}`;
+                const targetUrl = getFullUrl(`review.html?id=${encodeURIComponent(biz.id)}&standee=${encodeURIComponent(code)}`);
+
+                let qrDataUrl = '';
+                if (window.QRCodeStyling) {
+                    try {
+                        const qr = new QRCodeStyling({
+                            width: 750,
+                            height: 750,
+                            type: 'canvas',
+                            data: targetUrl,
+                            dotsOptions: { color: '#BE123C', type: 'rounded' },
+                            cornersSquareOptions: { color: '#0A1931', type: 'extra-rounded' },
+                            cornersDotOptions: { color: '#E01A8A', type: 'dot' },
+                            backgroundOptions: { color: '#FFFFFF' }
+                        });
+                        const rawBlob = await qr.getRawData('png');
+                        if (rawBlob) {
+                            qrDataUrl = await new Promise(res => {
+                                const r = new FileReader();
+                                r.onloadend = () => res(r.result);
+                                r.readAsDataURL(rawBlob);
+                            });
+                        }
+                    } catch(e) {}
+                }
+
+                const offscreenCanvas = document.createElement('canvas');
+                await window.KatayaStandee.renderStandeeToCanvas(offscreenCanvas, {
+                    standeeCode: code,
+                    title: biz.businessName.toUpperCase(),
+                    subtitle: 'Scan atau Tap NFC untuk Beri Ulasan Google',
+                    isRegistered: true,
+                    targetUrl: targetUrl,
+                    qrDataUrl: qrDataUrl,
+                    widthCm: 10,
+                    heightCm: 15
+                });
+
+                const safeName = biz.businessName.replace(/[^a-zA-Z0-9]/g, '_');
+                items.push({
+                    filename: `Standee_Mitra_${safeName}_${code}_10x15cm.png`,
+                    canvas: offscreenCanvas,
+                    dataUrl: offscreenCanvas.toDataURL('image/png')
+                });
+
+                if (labelEl) labelEl.textContent = `Membuat gambar ${i + 1}/${allBiz.length}...`;
+            }
+
+            await window.KatayaStandee.downloadMultiplePngsAsZip(
+                items,
+                `Semua_Barcode_Standee_Mitra_Kataya_${items.length}_Bisnis.zip`,
+                (pct, statusText) => {
+                    if (labelEl) labelEl.textContent = `${statusText}`;
+                }
+            );
+
+            setTimeout(() => {
+                if (labelEl) labelEl.textContent = origText;
+                if (window.lucide) lucide.createIcons();
+            }, 3000);
+        }
+
+        // ================= LOGIKA BOT WHATSAPP DEVELOPER & LOGS =================
+        async function initBotSettings() {
+            const phone = await window.KatayaDB.getDeveloperPhone();
+            const displayEl = document.getElementById('currentBotPhoneDisplay');
+            const inputEl = document.getElementById('inputNewBotPhone');
+            if (displayEl) {
+                displayEl.textContent = `+${phone}`;
+            }
+            if (inputEl) {
+                inputEl.value = phone;
+            }
+
+            // Isi dropdown uji bot bisnis (Privasi Terjaga Tanpa Menampilkan PIN)
+            const allBiz = await window.KatayaDB.getAllBusinesses();
+            const selectBiz = document.getElementById('selectTestBotBiz');
+            if (selectBiz) {
+                selectBiz.innerHTML = allBiz.map(b => 
+                    `<option value="${escapeHtml(b.whatsapp)}">${escapeHtml(b.businessName)} (+${escapeHtml(b.whatsapp)})</option>`
+                ).join('');
+            }
+
+            await renderBotLogsTable();
+        }
+
+        async function handleSaveBotPhone(e) {
+            if (e) e.preventDefault();
+            const inputEl = document.getElementById('inputNewBotPhone');
+            const alertEl = document.getElementById('botPhoneAlert');
+            const displayEl = document.getElementById('currentBotPhoneDisplay');
+            const raw = inputEl ? inputEl.value.trim() : '';
+
+            if (!raw) return;
+
+            const saved = await window.KatayaDB.setDeveloperPhone(raw);
+            if (saved) {
+                if (displayEl) displayEl.textContent = `+${saved}`;
+                if (alertEl) {
+                    alertEl.className = 'text-xs font-bold text-emerald-400 block';
+                    alertEl.textContent = `✔ Nomor WhatsApp bot developer berhasil diperbarui menjadi +${saved} dan aktif di seluruh aplikasi!`;
+                    setTimeout(() => alertEl.classList.add('hidden'), 4000);
+                }
+            } else {
+                if (alertEl) {
+                    alertEl.className = 'text-xs font-bold text-rose-400 block';
+                    alertEl.textContent = '❌ Nomor telepon minimal 8 digit angka. Periksa kembali format nomor.';
+                    setTimeout(() => alertEl.classList.add('hidden'), 4000);
+                }
+            }
+        }
+
+        async function handleTestBotPinGeneration() {
+            const selectBiz = document.getElementById('selectTestBotBiz');
+            const phone = selectBiz ? selectBiz.value : '';
+            if (!phone) {
+                alert('Pilih bisnis mitra yang ingin diuji.');
+                return;
+            }
+
+            const res = await window.KatayaDB.handleBotRequestNewPin(phone);
+            const container = document.getElementById('testBotResultContainer');
+            const pinEl = document.getElementById('testBotGeneratedPin');
+            const previewEl = document.getElementById('testBotMessagePreview');
+            const waLinkEl = document.getElementById('testBotWaLink');
+
+            if (res && res.success) {
+                if (container) container.classList.remove('hidden');
+                if (pinEl) pinEl.innerHTML = '<i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> •••• (Terkirim Rahasia ke WA Mitra)';
+                if (previewEl) {
+                    // Sensor PIN mentah di preview simulasi pesan agar tidak terekspos di halaman bot
+                    previewEl.textContent = res.message ? res.message.replace(/PIN Baru:\s*\d{4}/i, 'PIN Baru: ••••') : '';
+                }
+                if (waLinkEl) waLinkEl.href = res.waUrl;
+
+                // Segarkan log dan tabel developer
+                await renderBotLogsTable();
+                await renderDeveloperList();
+                await initBotSettings();
+                if (window.lucide) lucide.createIcons();
+            } else {
+                alert(res ? res.message : 'Gagal memproses bot.');
+            }
+        }
+
+        async function renderBotLogsTable() {
+            const tbody = document.getElementById('botLogsTableBody');
+            if (!tbody) return;
+
+            const logs = await window.KatayaDB.getBotLogs();
+            tbody.innerHTML = '';
+
+            if (logs.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="p-8 text-center text-slate-400">
+                            Belum ada riwayat aktivitas bot permintaan PIN baru.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            logs.forEach(log => {
+                const timeStr = log.timestamp ? new Date(log.timestamp).toLocaleString('id-ID', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                }) : '-';
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-[#0A1931]/60 transition-colors';
+                tr.innerHTML = `
+                    <td class="p-4 font-mono text-[11px] text-slate-300">${timeStr}</td>
+                    <td class="p-4">
+                        <div class="font-bold text-white text-xs">${escapeHtml(log.businessName || '-')}</div>
+                        <div class="text-[10px] text-slate-400 font-mono">${escapeHtml(log.businessId || '-')}</div>
+                    </td>
+                    <td class="p-4 font-mono text-emerald-400 font-bold">+${escapeHtml(log.phone)}</td>
+                    <td class="p-4">
+                        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-mono text-xs flex items-center gap-1.5 w-fit">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> •••• (Terkirim Rahasia ke Mitra)
+                        </span>
+                    </td>
+                    <td class="p-4 font-mono text-slate-300 text-[11px]">+${escapeHtml(log.devPhone)}</td>
+                    <td class="p-4">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                            ${escapeHtml(log.status || 'TERKIRIM KE MITRA')}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            if (window.lucide) lucide.createIcons();
+        }
+
+        async function handleClearBotLogs() {
+            if (confirm('Apakah Anda yakin ingin menghapus seluruh riwayat log aktivitas bot?')) {
+                await window.KatayaDB.clearBotLogs();
+                await renderBotLogsTable();
+            }
+        }
+
+        // ================= LOGIKA PERMINTAAN PIN BARU DARI MITRA =================
+        async function openDevPinRequestsModal() {
+            const modal = document.getElementById('modalDevPinRequests');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            await updatePinRequestNotifications();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeDevPinRequestsModal() {
+            const modal = document.getElementById('modalDevPinRequests');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function updatePinRequestNotifications() {
+            if (!window.KatayaDB || typeof window.KatayaDB.getAllPinRequests !== 'function') return;
+
+            const requests = await window.KatayaDB.getAllPinRequests();
+            const pendingRequests = requests.filter(r => r.status === 'MENUNGGU_DEVELOPER');
+            const pendingCount = pendingRequests.length;
+
+            // 1. Update Badge di Header
+            const badgeEl = document.getElementById('pinRequestBadgeCount');
+            if (badgeEl) {
+                badgeEl.textContent = pendingCount;
+                if (pendingCount > 0) {
+                    badgeEl.className = 'px-1.5 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white min-w-[18px] text-center animate-bounce';
+                } else {
+                    badgeEl.className = 'px-1.5 py-0.5 rounded-full text-[10px] font-black bg-slate-700 text-slate-300 min-w-[18px] text-center';
+                }
+            }
+
+            // 2. Update Banner Notifikasi di Atas
+            const bannerEl = document.getElementById('bannerNewPinRequest');
+            const bannerTitle = document.getElementById('bannerPinReqTitle');
+            const bannerDesc = document.getElementById('bannerPinReqDesc');
+            if (bannerEl) {
+                if (pendingCount > 0) {
+                    bannerEl.classList.remove('hidden');
+                    const latest = pendingRequests[0];
+                    if (bannerTitle) {
+                        bannerTitle.textContent = `Ada ${pendingCount} Permintaan PIN Baru Menunggu Konfirmasi Developer!`;
+                    }
+                    if (bannerDesc) {
+                        bannerDesc.textContent = `Mitra "${escapeHtml(latest.businessName || 'Bisnis')}" (+${escapeHtml(latest.phone)}) meminta PIN baru. PIN baru belum dikirim ke mitra sebelum Anda menekan tombol "Kirim PIN Baru".`;
+                    }
+                } else {
+                    bannerEl.classList.add('hidden');
+                }
+            }
+
+            // 3. Update Badge di Tab 5 & Modal
+            const tab5Badge = document.getElementById('tab5PendingBadge');
+            if (tab5Badge) {
+                tab5Badge.textContent = `${pendingCount} Menunggu Respon`;
+                tab5Badge.className = pendingCount > 0 
+                    ? 'px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                    : 'px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+            }
+            const modalBadge = document.getElementById('modalPendingPinCount');
+            if (modalBadge) {
+                modalBadge.textContent = `${pendingCount} Menunggu`;
+                modalBadge.className = pendingCount > 0
+                    ? 'px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white'
+                    : 'px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-700 text-slate-300';
+            }
+
+            // 4. Render Tabel di Modal & Tab 5
+            renderPinRequestsList('modalPinRequestsTableBody', requests);
+            renderPinRequestsList('tab5PinRequestsTableBody', requests);
+        }
+
+        function renderPinRequestsList(containerId, requests) {
+            const tbody = document.getElementById(containerId);
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            if (!requests || requests.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="p-6 text-center text-slate-400">
+                            Belum ada permohonan PIN baru dari mitra.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            requests.forEach(req => {
+                const timeStr = req.requestedAt ? new Date(req.requestedAt).toLocaleString('id-ID', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : '-';
+
+                const isPending = (req.status === 'MENUNGGU_DEVELOPER');
+                const statusBadge = isPending
+                    ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 inline-flex items-center gap-1">
+                         <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span> Menunggu Developer
+                       </span>`
+                    : `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 inline-flex items-center gap-1">
+                         <i data-lucide="check-check" class="w-3 h-3 text-emerald-400"></i> Sudah Dikirim ke WA
+                       </span>`;
+
+                const actionBtn = isPending
+                    ? `<button onclick="handleSendPinFromDev('${escapeHtml(req.id)}')" 
+                         class="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-teal-600 hover:to-emerald-600 text-white font-bold rounded-xl text-xs inline-flex items-center gap-1.5 shadow-md shadow-emerald-950/40 transition-all">
+                         <i data-lucide="send" class="w-3.5 h-3.5"></i> Kirim PIN Baru ke WA Mitra
+                       </button>`
+                    : `<button onclick="handleSendPinFromDev('${escapeHtml(req.id)}')" 
+                         class="px-3 py-1.5 bg-[#0A1931] hover:bg-slate-800 border border-slate-700 text-slate-300 font-bold rounded-xl text-xs inline-flex items-center gap-1.5 transition-all">
+                         <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Kirim Ulang PIN
+                       </button>`;
+
+                const tr = document.createElement('tr');
+                tr.className = isPending ? 'bg-amber-950/20 hover:bg-amber-950/40 transition-colors' : 'hover:bg-[#0A1931]/60 transition-colors';
+                
+                if (containerId === 'modalPinRequestsTableBody') {
+                    tr.innerHTML = `
+                        <td class="p-3 font-mono text-[11px] text-slate-300">${timeStr}</td>
+                        <td class="p-3">
+                            <div class="font-bold text-white text-xs">${escapeHtml(req.businessName || '-')}</div>
+                            <div class="text-[11px] font-mono text-emerald-400 font-bold">+${escapeHtml(req.phone)}</div>
+                        </td>
+                        <td class="p-3">${statusBadge}</td>
+                        <td class="p-3 text-right">${actionBtn}</td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td class="p-4 font-mono text-[11px] text-slate-300">${timeStr}</td>
+                        <td class="p-4">
+                            <div class="font-bold text-white text-xs">${escapeHtml(req.businessName || '-')}</div>
+                            <div class="text-[10px] text-slate-400 font-mono">ID: ${escapeHtml(req.businessId || '-')}</div>
+                        </td>
+                        <td class="p-4 font-mono text-emerald-400 font-bold">+${escapeHtml(req.phone)}</td>
+                        <td class="p-4">${statusBadge}</td>
+                        <td class="p-4 text-right">${actionBtn}</td>
+                    `;
+                }
+                tbody.appendChild(tr);
+            });
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        async function handleSendPinFromDev(requestId) {
+            if (!window.KatayaDB || typeof window.KatayaDB.sendNewPinByDeveloper !== 'function') return;
+
+            const res = await window.KatayaDB.sendNewPinByDeveloper(requestId);
+            if (res && res.success) {
+                await updatePinRequestNotifications();
+                await renderBotLogsTable();
+                await renderDeveloperList();
+
+                // Buka WhatsApp Developer -> Mitra dengan pesan resmi PIN baru
+                if (res.waSendUrl) {
+                    window.open(res.waSendUrl, '_blank');
+                }
+
+                alert(`PIN Baru acak berhasil dibuat untuk "${res.businessName}".\nWhatsApp otomatis dibuka untuk mengirimkan PIN ke +${res.phone}.`);
+            } else {
+                alert(res ? res.message : 'Gagal mengirimkan PIN baru.');
+            }
+        }
+
+        // Panggil init saat halaman dimuat
+        const originalDOMContentLoaded = window.addEventListener('DOMContentLoaded', async () => {
+            await initStandeeGenerator();
+            await initBotSettings();
+            await updatePinRequestNotifications();
+        });
+
+        lucide.createIcons();
+    </script>
+
+    <!-- MODAL PERMINTAAN PIN BARU DARI MITRA -->
+    <div id="modalDevPinRequests" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-[#0B1C3F] border border-amber-500/50 rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-amber-950/40 via-[#0B1C3F] to-[#0B1C3F]">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center shadow">
+                        <i data-lucide="key" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-base font-black text-white">Kelola Permintaan PIN Baru Mitra</h3>
+                            <span id="modalPendingPinCount" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white">0</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Kirimkan PIN resmi ke WhatsApp mitra saat diminta.</p>
+                    </div>
+                </div>
+                <button onclick="closeDevPinRequestsModal()" class="w-8 h-8 rounded-xl bg-[#0A1931] text-slate-400 hover:text-white flex items-center justify-center border border-slate-700">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="p-5 overflow-y-auto space-y-4 max-h-[60vh]">
+                <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-[#0A1931]">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-900 text-slate-400 uppercase font-bold text-[10px] tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">Waktu</th>
+                                <th class="p-3">Nama Bisnis &amp; No WA</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3 text-right">Tindakan Developer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalPinRequestsTableBody" class="divide-y divide-slate-800">
+                            <!-- Dynamic content via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-800 bg-[#0A1931] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <span class="text-[11px] text-slate-400 flex items-center gap-1.5 text-center sm:text-left">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                    <span>Sistem Aman: PIN baru acak dirahasiakan &amp; hanya dikirim via WA saat Anda menekan tombol kirim.</span>
+                </span>
+                <button onclick="closeDevPinRequestsModal()" class="w-full sm:w-auto px-5 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white rounded-xl transition-all">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Printable Sheet Container for Mass Standees -->
+    <div id="printSheetContainer" class="hidden"></div>
+</body>
+</html>
+
+
